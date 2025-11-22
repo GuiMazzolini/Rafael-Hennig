@@ -1,0 +1,42 @@
+"use client"
+
+import React from 'react';
+
+export const ContactSection: React.FC = () => {
+  const socialLinks = [
+    { href: '#', label: 'Instagram' },
+    { href: '#', label: 'Behance' },
+    { href: '#', label: 'LinkedIn' },
+  ];
+
+  return (
+    <section id="contact" className="px-6 md:px-12 max-w-screen-2xl mx-auto pb-24 md:pb-32">
+      <div className="border-t border-neutral-300 pt-12 md:pt-24">
+        <h2 className="text-4xl md:text-6xl font-light tracking-tight mb-12">Let's work together</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+          <div>
+            <p className="text-neutral-600 mb-8 leading-relaxed">
+              Whether you're looking for a creative partner or just want to say hello, I'd love to hear from you.
+            </p>
+            <div className="space-y-4">
+              <a href="mailto:hello@rafaelhennig.com" className="block text-xl hover:opacity-60 transition-opacity">
+                hello@rafaelhennig.com
+              </a>
+              <div className="flex gap-6 text-sm">
+                {socialLinks.map((link) => (
+                  <a 
+                    key={link.label}
+                    href={link.href} 
+                    className="hover:opacity-60 transition-opacity"
+                  >
+                    {link.label}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};

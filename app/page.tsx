@@ -1,65 +1,88 @@
-import Image from "next/image";
+"use client"
 
-export default function Home() {
+import React, { useState, useEffect } from 'react';
+import { CustomCursor } from '@/app/components/ui/CustomCursor'
+import { Lightbox } from '@/app/components/ui/Lightbox';
+import { Navigation } from '@/app/components/layout/Navgation';
+import { Footer } from '@/app/components/layout/Footer'
+import { HeroSection } from '@/app/components/sections/Hero';
+import { PhotoGallerySection } from '@/app/components/sections/GallerySection';
+import { AboutSection } from '@/app/components/sections/AboutSection';
+import { ContactSection } from '@/app/components/sections/ContactSection';
+
+const PhotographyPortfolio: React.FC = () => {
+  const [scrolled, setScrolled] = useState(false);
+  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
+  const [lightboxImage, setLightboxImage] = useState<string | null>(null);
+  const [hoveredImage, setHoveredImage] = useState<string | null>(null);
+
+  // Sample images - replace with actual photographer's work
+  const analogPhotos = [
+    'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=800&h=1000&fit=crop',
+    'https://images.unsplash.com/photo-1452457807411-4979b707c5be?w=800&h=1000&fit=crop',
+    'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=1000&fit=crop',
+    'https://images.unsplash.com/photo-1465146633011-14f8e0781093?w=800&h=1000&fit=crop',
+    'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800&h=1000&fit=crop',
+    'https://images.unsplash.com/photo-1418065460487-3e41a6c84dc5?w=800&h=1000&fit=crop',
+    'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop',
+    'https://images.unsplash.com/photo-1511884642898-4c92249e20b6?w=800&h=1000&fit=crop',
+    'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&h=1000&fit=crop',
+    'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=800&h=600&fit=crop',
+  ];
+
+  const digitalPhotos = [
+    'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=800&h=1000&fit=crop',
+    'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&h=1000&fit=crop',
+    'https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=800&h=1000&fit=crop',
+    'https://images.unsplash.com/photo-1514539079130-25950c84af65?w=800&h=1000&fit=crop',
+    'https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=800&h=600&fit=crop',
+    'https://images.unsplash.com/photo-1477346611705-65d1883cee1e?w=800&h=1000&fit=crop',
+    'https://images.unsplash.com/photo-1486870591958-9b9d0d1dda99?w=800&h=1000&fit=crop',
+    'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&h=600&fit=crop',
+    'https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=800&h=1000&fit=crop',
+    'https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=800&h=1000&fit=crop',
+  ];
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 50);
+    const handleMouseMove = (e: MouseEvent) => setCursorPos({ x: e.clientX, y: e.clientY });
+
+    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('mousemove', handleMouseMove);
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+    <div className="bg-neutral-50 min-h-screen font-sans">
+      <CustomCursor x={cursorPos.x} y={cursorPos.y} isHovered={!!hoveredImage} />
+      <Navigation scrolled={scrolled} />
+      <HeroSection />
+      
+      <PhotoGallerySection
+        title="Analog"
+        photos={analogPhotos}
+        onImageClick={setLightboxImage}
+        onImageHover={setHoveredImage}
+        sectionId="work"
+      />
+      
+      <PhotoGallerySection
+        title="Digital"
+        photos={digitalPhotos}
+        onImageClick={setLightboxImage}
+        onImageHover={setHoveredImage}
+      />
+      
+      <AboutSection />
+      <ContactSection />
+      <Footer />
+      <Lightbox image={lightboxImage} onClose={() => setLightboxImage(null)} />
     </div>
   );
-}
+};
+
+export default PhotographyPortfolio;
