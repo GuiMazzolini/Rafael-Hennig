@@ -10,11 +10,12 @@ export const AboutSection: React.FC = () => {
           <h2 className="text-4xl md:text-5xl font-light tracking-tight mb-8">About</h2>
           <div className="space-y-6 text-neutral-600 leading-relaxed">
             <p>
-              I'm a photographer and cinematographer specializing in capturing authentic moments through both analog and digital mediums. My work explores the relationship between light, composition, and emotion.
-            </p>
+              I am Rafael Hennig, a Brazilian, Berlin based photographer and filmmaker working across analog and digital. My art moves between cities 
+              and continents, tracing light, texture, and the quiet moments that tell a place’s story. 
+              From street corners in Berlin to coastal towns in Brazil, I seek a cinematic stillness in everyday life. 
+           </p>
             <p>
-              Based in Berlin, I collaborate with clients worldwide, bringing a unique perspective that bridges traditional film photography with contemporary digital techniques.
-            </p>
+              I am currently working a decolonial photography project about small acts of resistance on everyday moments as Latin immigrants in Berlin.             </p>
           </div>
         </div>
         <div className="bg-neutral-200 aspect-4/5 overflow-hidden">

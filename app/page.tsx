@@ -3,9 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import { CustomCursor } from '@/app/components/ui/CustomCursor'
 import { Lightbox } from '@/app/components/ui/Lightbox';
-import { Navigation } from '@/app/components/layout/Navgation';
+import { Navigation } from '@/app/components/layout/Navigation';
 import { Footer } from '@/app/components/layout/Footer'
-import { HeroSection } from '@/app/components/sections/Hero';
+import { HeroSection } from '@/app/components/sections/HeroSection';
 import { PhotoGallerySection } from '@/app/components/sections/GallerySection';
 import { AboutSection } from '@/app/components/sections/AboutSection';
 import { ContactSection } from '@/app/components/sections/ContactSection';
