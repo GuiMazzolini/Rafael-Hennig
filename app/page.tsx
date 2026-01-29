@@ -13,7 +13,8 @@ import { ContactSection } from '@/app/components/sections/ContactSection';
 const PhotographyPortfolio: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
-  const [lightboxImage, setLightboxImage] = useState<string | null>(null);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [lightboxImages, setLightboxImages] = useState<string[]>([]);
   const [hoveredImage, setHoveredImage] = useState<string | null>(null);
 
   // Sample images - replace with actual photographer's work
@@ -65,7 +66,10 @@ const PhotographyPortfolio: React.FC = () => {
       <PhotoGallerySection
         title="Analog"
         photos={analogPhotos}
-        onImageClick={setLightboxImage}
+        onImageClick={(photo, index, photos) => {
+          setLightboxImages(photos);
+          setLightboxIndex(index);
+        }}
         onImageHover={setHoveredImage}
         sectionId="work"
       />
@@ -73,14 +77,23 @@ const PhotographyPortfolio: React.FC = () => {
       <PhotoGallerySection
         title="Digital"
         photos={digitalPhotos}
-        onImageClick={setLightboxImage}
+        onImageClick={(photo, index, photos) => {
+          setLightboxImages(photos);
+          setLightboxIndex(index);
+        }}
         onImageHover={setHoveredImage}
       />
       
       <AboutSection />
       <ContactSection />
       <Footer />
-      <Lightbox image={lightboxImage} onClose={() => setLightboxImage(null)} />
+      {lightboxIndex !== null && (
+        <Lightbox
+          images={lightboxImages}
+          startIndex={lightboxIndex}
+          onClose={() => setLightboxIndex(null)}
+        />
+      )}
     </div>
   );
 };
