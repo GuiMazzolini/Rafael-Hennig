@@ -46,7 +46,6 @@ export const Navigation: React.FC<NavigationProps> = ({ scrolled }) => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
       <div className={`md:hidden bg-neutral-50 transition-all duration-300 overflow-hidden ${
         menuOpen ? 'max-h-48 border-t border-neutral-200 mt-4' : 'max-h-0'
       }`}>

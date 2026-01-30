@@ -17,7 +17,6 @@ const PhotographyPortfolio: React.FC = () => {
   const [lightboxImages, setLightboxImages] = useState<string[]>([]);
   const [hoveredImage, setHoveredImage] = useState<string | null>(null);
 
-  // Sample images - replace with actual photographer's work
   const analogPhotos = [
     'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=800&h=1000&fit=crop',
     'https://images.unsplash.com/photo-1452457807411-4979b707c5be?w=800&h=1000&fit=crop',

@@ -15,7 +15,6 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: 'Rafael Hennig - Photographer & Cinematographer',
   description: 'Brazilian, Berlin-based photographer and filmmaker working across analog and digital media',
-  // Add favicon
 }
 
 export default function RootLayout({

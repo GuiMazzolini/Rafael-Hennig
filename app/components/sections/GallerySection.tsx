@@ -93,16 +93,18 @@ export const PhotoGallerySection: React.FC<PhotoGallerySectionProps> = ({
             onMouseLeave={() => onImageHover(null)}
             className="flex-none w-64 md:w-80 lg:w-96 snap-start cursor-pointer group"
           >
-            <div className="relative overflow-hidden bg-neutral-200 aspect-[3/4]">
+            <div className="relative overflow-hidden bg-neutral-200 aspect-3/4">
               <img
                 src={photo}
                 alt={`${title} photography ${idx + 1}`}
+                loading="lazy"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 draggable={false}
               />
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-500" />
             </div>
           </button>
+          
         ))}
       </div>
 
