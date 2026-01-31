@@ -3,10 +3,15 @@
 import React, { useRef, useState, useEffect } from "react";
 import { ScrollButton } from "../ui/ScrollButton";
 
+export type Photo = {
+  src: string;
+  orientation: "portrait" | "landscape";
+};
+
 interface PhotoGallerySectionProps {
   title: string;
-  photos: string[];
-  onImageClick: (photo: string, index: number, photos: string[]) => void;
+  photos: Photo[];
+  onImageClick: (photo: string, index: number, photos: Photo[]) => void;
   onImageHover: (id: string | null) => void;
   sectionId?: string;
 }
@@ -22,6 +27,16 @@ export const PhotoGallerySection: React.FC<PhotoGallerySectionProps> = ({
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
 
+  const [photoHeights] = useState(() => 
+    photos.map((photo) => {
+      const min = photo.orientation === 'portrait' ? 260 : 180;
+      const max = photo.orientation === 'portrait' ? 380 : 340; // Increased from 320 to 340
+      
+      // Generate random height within range
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    })
+  );
+
   const updateScrollState = () => {
     const el = scrollRef.current;
     if (!el) return;
@@ -31,9 +46,7 @@ export const PhotoGallerySection: React.FC<PhotoGallerySectionProps> = ({
   };
 
   const scroll = (direction: "left" | "right") => {
-    if (!scrollRef.current) return;
-
-    scrollRef.current.scrollBy({
+    scrollRef.current?.scrollBy({
       left: direction === "left" ? -400 : 400,
       behavior: "smooth",
     });
@@ -44,13 +57,9 @@ export const PhotoGallerySection: React.FC<PhotoGallerySectionProps> = ({
     if (!el) return;
 
     updateScrollState();
-
     el.addEventListener("scroll", updateScrollState);
 
-    const resizeObserver = new ResizeObserver(() => {
-      updateScrollState();
-    });
-
+    const resizeObserver = new ResizeObserver(updateScrollState);
     resizeObserver.observe(el);
 
     return () => {
@@ -60,13 +69,13 @@ export const PhotoGallerySection: React.FC<PhotoGallerySectionProps> = ({
   }, []);
 
   return (
-    <section id={sectionId} className="py-12 md:py-16">
-      <div className="px-6 md:px-12 mb-6 flex justify-between items-center max-w-screen-2xl mx-auto">
-        <h3 className="text-2xl md:text-3xl tracking-tight">
+    <section id={sectionId} className="py-16 md:py-24">
+      <div className="px-6 md:px-12 mb-8 flex justify-between items-center max-w-screen-2xl mx-auto">
+        <h3 className="text-4xl md:text-6xl font-light tracking-tight">
           {title}
         </h3>
 
-        <div className="flex gap-2">
+        <div className="flex gap-1">
           <ScrollButton
             direction="left"
             onClick={() => scroll("left")}
@@ -82,37 +91,47 @@ export const PhotoGallerySection: React.FC<PhotoGallerySectionProps> = ({
 
       <div
         ref={scrollRef}
-        className="flex gap-3 overflow-x-auto scrollbar-hide px-6 md:px-12 snap-x snap-mandatory"
-        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+        className="
+          flex items-center gap-3 md:gap-4
+          px-6 md:px-12
+          overflow-x-auto
+          snap-x snap-mandatory
+          scrollbar-hide
+          pb-4
+        "
+        style={{
+          scrollPaddingLeft: "1.5rem",
+          scrollPaddingRight: "1.5rem",
+        }}
       >
         {photos.map((photo, idx) => (
-          <button
-            key={`${title}-${idx}`}
-            onClick={() => onImageClick(photo, idx, photos)}
-            onMouseEnter={() => onImageHover(`${title}-${idx}`)}
-            onMouseLeave={() => onImageHover(null)}
-            className="flex-none w-64 md:w-80 lg:w-96 snap-start cursor-pointer group"
-          >
-            <div className="relative overflow-hidden bg-neutral-200 aspect-3/4">
-              <img
-                src={photo}
-                alt={`${title} photography ${idx + 1}`}
-                loading="lazy"
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                draggable={false}
-              />
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-500" />
-            </div>
-          </button>
-          
+<button
+  key={`${title}-${idx}`}
+  onClick={() => onImageClick(photo.src, idx, photos)}
+  onMouseEnter={() => onImageHover(`${title}-${idx}`)}
+  onMouseLeave={() => onImageHover(null)}
+  className="flex-none snap-start group cursor-pointer hover:z-10"
+  style={{ 
+    height: `${photoHeights[idx]}px`,
+  }}
+>
+  <div className="relative overflow-hidden h-full flex items-center justify-center rounded-sm min-w-45 max-w-[320px]">
+    <img
+      src={photo.src}
+      alt={`${title} photography ${idx + 1}`}
+      loading={idx < 4 ? "eager" : "lazy"}
+      draggable={false}
+      className="
+        max-h-full max-w-full object-contain
+        transition-all duration-500 ease-out
+        group-hover:brightness-105
+        group-hover:shadow-xl
+      "
+    />
+  </div>
+</button>
         ))}
       </div>
-
-      <style jsx>{`
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
     </section>
   );
 };
