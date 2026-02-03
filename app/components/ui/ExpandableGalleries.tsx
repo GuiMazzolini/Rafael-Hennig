@@ -34,11 +34,11 @@ export const ExpandableGalleries: React.FC<ExpandableGalleriesProps> = ({
   }
 
   return (
-    <div className="py-8 md:py-12">
-      <h2 className="text-4xl md:text-6xl font-light tracking-tight mb-8 px-6 md:px-12 max-w-screen-2xl mx-auto">
+    <div className="py-8 md:py-12 ">
+      <h2 className="text-4xl md:text-6xl font-light tracking-tight mb-8 px-6 md:px-12 max-w-screen-2xl mx-auto ">
         {title}
       </h2>
-      <div className="space-y-8 md:space-y-12">
+      <div className="space-y-12 md:space-y-20">
         {visibleGalleries.map((gallery) => (
           <PhotoGallerySection
             key={gallery.id}
@@ -53,7 +53,7 @@ export const ExpandableGalleries: React.FC<ExpandableGalleriesProps> = ({
         <div className="flex justify-center mt-12">
           <button
             onClick={() => setShowAll(!showAll)}
-            className="px-8 py-4 border-2 border-neutral-900 rounded-full text-lg font-light hover:bg-neutral-900 hover:text-white transition-all duration-300"
+            className="px-10 py-4 bg-neutral-900 text-white rounded-full text-base font-light hover:bg-neutral-700 transition-all duration-300 shadow-lg hover:shadow-xl"
           >
             {showAll 
               ? '− Show Less' 

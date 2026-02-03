@@ -14,7 +14,7 @@ export const ContactSection: React.FC = () => {
       id="contact"
       className="px-6 md:px-12 max-w-screen-2xl mx-auto pb-24 md:pb-40"
     >
-      <div className="border-t border-neutral-300 pt-12 md:pt-24">
+      <div className="pt-12 md:pt-24">
         <h2 className="text-4xl md:text-6xl font-light tracking-tight mb-12 text-neutral-900">
           Let's work together
         </h2>

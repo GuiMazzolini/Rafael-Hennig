@@ -19,7 +19,7 @@ body {
 }
 
 .animate-hero {
-  animation: heroIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: heroIn 3s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .scrollbar-hide {
@@ -30,4 +30,3 @@ body {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
-

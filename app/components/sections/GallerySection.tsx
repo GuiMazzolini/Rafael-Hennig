@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useRef, useState, useEffect } from 'react';
-import { ScrollButton } from '../ui/ScrollButton';
+import React, { useRef, useState, useEffect } from "react";
+import { ScrollButton } from "../ui/ScrollButton";
 
 export type Photo = {
   src: string;
@@ -28,11 +28,11 @@ export const PhotoGallerySection: React.FC<PhotoGallerySectionProps> = ({
   const [canScrollRight, setCanScrollRight] = useState(false);
 
   const [photoHeights] = useState(() =>
-    photos.map((photo) => {
-      const min = photo.orientation === 'portrait' ? 260 : 180;
-      const max = photo.orientation === 'portrait' ? 380 : 340;
-
-      return Math.floor(Math.random() * (max - min + 1)) + min;
+    photos.map((photo, i) => {
+      if (photo.orientation === 'portrait') {
+        return i % 3 === 0 ? 340 : i % 3 === 1 ? 300 : 360;
+      }
+      return i % 2 === 0 ? 220 : 260;
     }),
   );
 
@@ -68,9 +68,9 @@ export const PhotoGallerySection: React.FC<PhotoGallerySectionProps> = ({
   }, []);
 
   return (
-    <section id={sectionId} className="py-2 md:py-10">
+    <section id={sectionId} className="py-4 md:py-8">
       <div className="px-6 md:px-12 flex justify-between items-center max-w-screen-2xl mx-auto text-3xl">
-        <h2 className=" md:text-4xl font-light tracking-tight">
+        <h2 className="text-xl md:text-2xl text-neutral-700">
           {title}
         </h2>
 
@@ -87,17 +87,9 @@ export const PhotoGallerySection: React.FC<PhotoGallerySectionProps> = ({
           />
         </div>
       </div>
-
       <div
         ref={scrollRef}
-        className="
-          flex items-center gap-3 md:gap-4
-          px-6 md:px-12
-          overflow-x-auto
-          snap-x snap-mandatory
-          scrollbar-hide
-          
-        "
+        className="flex items-center gap-3 md:gap-4 px-6 md:px-12 overflow-x-auto snap-x snap-mandatory scrollbar-hide"
         style={{
           scrollPaddingLeft: '1.5rem',
           scrollPaddingRight: '1.5rem',
@@ -120,12 +112,7 @@ export const PhotoGallerySection: React.FC<PhotoGallerySectionProps> = ({
                 alt={`${title} photography ${idx + 1}`}
                 loading={idx < 4 ? 'eager' : 'lazy'}
                 draggable={false}
-                className="
-                  max-h-full max-w-full object-contain
-                  transition-all duration-500 ease-out
-                  group-hover:brightness-105
-                  group-hover:shadow-xl
-                "
+                className="max-h-full max-w-full object-contain transition-all duration-500 ease-out group-hover:brightness-105 group-hover:shadow-xl"
               />
             </div>
           </button>
