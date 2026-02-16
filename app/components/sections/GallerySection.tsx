@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useRef, useState, useEffect } from "react";
-import { ScrollButton } from "../ui/ScrollButton";
+import React, { useRef, useState, useEffect } from 'react';
+import { ScrollButton } from '../ui/ScrollButton';
 
 export type Photo = {
   src: string;
@@ -26,34 +26,24 @@ export const PhotoGallerySection: React.FC<PhotoGallerySectionProps> = ({
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
-  const [photoHeights] = useState(() =>
-    photos.map((photo, i) => {
-      if (photo.orientation === 'portrait') {
-        return i % 3 === 0 ? 340 : i % 3 === 1 ? 300 : 360;
-      }
-      return i % 2 === 0 ? 220 : 260;
-    }),
-  );
-
-  const updateScrollState = () => {
-    const el = scrollRef.current;
-    if (!el) return;
-
-    setCanScrollLeft(el.scrollLeft > 0);
-    setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 5);
-  };
-
-  const scroll = (direction: 'left' | 'right') => {
-    scrollRef.current?.scrollBy({
-      left: direction === 'left' ? -400 : 400,
-      behavior: 'smooth',
-    });
-  };
+  useEffect(() => {
+    const media = window.matchMedia('(max-width: 767px)');
+    const update = () => setIsMobile(media.matches);
+    update();
+    media.addEventListener('change', update);
+    return () => media.removeEventListener('change', update);
+  }, []);
 
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
+
+    const updateScrollState = () => {
+      setCanScrollLeft(el.scrollLeft > 0);
+      setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 5);
+    };
 
     updateScrollState();
     el.addEventListener('scroll', updateScrollState);
@@ -67,14 +57,28 @@ export const PhotoGallerySection: React.FC<PhotoGallerySectionProps> = ({
     };
   }, []);
 
+  if (photos.length === 0) return null;
+
+  const scroll = (direction: 'left' | 'right') => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollBy({
+      left: direction === 'left' ? -el.clientWidth * 0.8 : el.clientWidth * 0.8,
+      behavior: 'smooth',
+    });
+  };
+
+  const mobilePadding =
+    photos[0]?.orientation === 'portrait'
+      ? 'calc(50vw - 110px)'
+      : 'calc(50vw - 37vw)';
+
   return (
     <section id={sectionId} className="py-4 md:py-8">
-      <div className="px-6 md:px-12 flex justify-between items-center max-w-screen-2xl mx-auto text-3xl">
-        <h2 className="text-xl md:text-2xl text-neutral-700">
-          {title}
-        </h2>
+      <div className="px-6 md:px-12 flex justify-between items-center max-w-screen-2xl mx-auto">
+        <h2 className="text-xl md:text-2xl text-neutral-700">{title}</h2>
 
-        <div className="flex gap-1">
+        <div className="hidden md:flex gap-1">
           <ScrollButton
             direction="left"
             onClick={() => scroll('left')}
@@ -87,36 +91,58 @@ export const PhotoGallerySection: React.FC<PhotoGallerySectionProps> = ({
           />
         </div>
       </div>
+      
       <div
         ref={scrollRef}
-        className="flex items-center gap-3 md:gap-4 px-6 md:px-12 overflow-x-auto snap-x snap-mandatory scrollbar-hide"
+        className="flex items-center gap-3 md:gap-4 overflow-x-auto scrollbar-hide snap-x snap-proximity px-6 md:px-12 scroll-smooth"
         style={{
+          paddingLeft: isMobile ? mobilePadding : undefined,
+          paddingRight: isMobile ? mobilePadding : undefined,
           scrollPaddingLeft: '1.5rem',
           scrollPaddingRight: '1.5rem',
         }}
       >
-        {photos.map((photo, idx) => (
-          <button
-            key={`${title}-${idx}`}
-            onClick={() => onImageClick(photo.src, idx, photos)}
-            onMouseEnter={() => onImageHover(`${title}-${idx}`)}
-            onMouseLeave={() => onImageHover(null)}
-            className="flex-none snap-start group cursor-pointer hover:z-10"
-            style={{
-              height: `${photoHeights[idx]}px`,
-            }}
-          >
-            <div className="relative overflow-hidden h-full flex items-center justify-center rounded-sm min-w-45 max-w-[320px]">
-              <img
-                src={photo.src}
-                alt={`${title} photography ${idx + 1}`}
-                loading={idx < 4 ? 'eager' : 'lazy'}
-                draggable={false}
-                className="max-h-full max-w-full object-contain transition-all duration-500 ease-out group-hover:brightness-105 group-hover:shadow-xl"
-              />
-            </div>
-          </button>
-        ))}
+        {photos.map((photo, idx) => {
+          const isPortrait = photo.orientation === 'portrait';
+
+          return (
+            <button
+              key={`${title}-${idx}`}
+              onClick={() => onImageClick(photo.src, idx, photos)}
+              onMouseEnter={() => onImageHover(`${title}-${idx}`)}
+              onMouseLeave={() => onImageHover(null)}
+              className="shrink-0 snap-center cursor-pointer group"
+            >
+              <div
+                className={`
+                  relative overflow-hidden rounded-sm
+                  transition-transform duration-300
+                  md:group-hover:scale-[1.02]
+                  ${
+                    isPortrait
+                      ? 'md:w-[260px] md:h-[347px] lg:w-[280px] lg:h-[373px]'
+                      : 'md:w-[320px] md:h-[240px] lg:w-[360px] lg:h-[270px]'
+                  }
+                `}
+                style={
+                  isMobile
+                    ? isPortrait
+                      ? { width: '220px', height: '293px' }
+                      : { width: '74vw', height: 'calc(74vw * 0.75)' }
+                    : undefined
+                }
+              >
+                <img
+                  src={photo.src}
+                  alt={`${title} photography ${idx + 1}`}
+                  loading={idx < 4 ? 'eager' : 'lazy'}
+                  draggable={false}
+                  className="w-full h-full object-cover transition-all duration-500 ease-out group-hover:brightness-105 md:group-hover:shadow-xl"
+                />
+              </div>
+            </button>
+          );
+        })}
       </div>
     </section>
   );

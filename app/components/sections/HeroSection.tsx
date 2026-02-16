@@ -16,7 +16,7 @@ export const HeroSection: React.FC = () => {
       <div className="relative animate-hero max-w-screen-2xl mx-auto">
         <h1 className="text-5xl md:text-7xl lg:text-8xl font-light leading-[0.95] tracking-tight">
           Photographer
-          <span className="block ml-12 md:ml-24 text-neutral-500">
+          <span className="block ml-3 md:ml-24 text-neutral-500">
             Cinematographer
           </span>
         </h1>

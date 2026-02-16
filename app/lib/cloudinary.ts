@@ -13,36 +13,42 @@ export type Gallery = {
   photos: Photo[];
 };
 
+type CloudinaryResource = {
+  public_id: string;
+  width: number;
+  height: number;
+};
+
 export async function getGalleriesByCategory(
-  category: 'analog' | 'digital'
+  category: 'analog' | 'digital',
 ): Promise<Gallery[]> {
   try {
-    const result = await cloudinary.api.sub_folders(category);
-    
+    const result = await cloudinary.api.sub_folders(category, {
+      max_results: 500,
+    });
+
     const galleries = await Promise.all(
       result.folders.map(async (folder: any) => {
-        const photos = await cloudinary.api.resources({
-          type: 'upload',
-          prefix: `${category}/${folder.name}`,
-          max_results: 500,
-          resource_type: 'image',
-        });
+        const photos = await cloudinary.search
+          .expression(`asset_folder=${category}/${folder.name}`)
+          .sort_by('created_at', 'asc')
+          .max_results(500)
+          .execute();
 
         return {
           id: folder.name,
           title: formatLocationName(folder.name),
-          photos: photos.resources.map((photo: any) => ({
+          photos: photos.resources.map((photo: CloudinaryResource) => ({
             src: buildCloudinaryUrl(photo.public_id),
-            orientation: photo.height > photo.width ? 'portrait' as const : 'landscape' as const,
+            orientation: photo.height > photo.width ? 'portrait' : 'landscape',
           })),
         };
-      })
+      }),
     );
 
     return galleries
-      .filter(g => g.photos.length > 0)
-      .sort((a, b) => a.title.localeCompare(b.title));
-      
+      .filter((g) => g.photos.length > 0)
+      .sort((a, b) => a.id.localeCompare(b.id));
   } catch (error) {
     console.error(`Error fetching ${category} galleries:`, error);
     return [];
@@ -52,7 +58,7 @@ export async function getGalleriesByCategory(
 function formatLocationName(folderName: string): string {
   return folderName
     .split('-')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
 }
 
@@ -62,15 +68,14 @@ function buildCloudinaryUrl(publicId: string): string {
 
 export async function getGalleryByLocation(
   category: 'analog' | 'digital',
-  location: string
+  location: string,
 ): Promise<Gallery | null> {
   try {
-    const photos = await cloudinary.api.resources({
-      type: 'upload',
-      prefix: `${category}/${location}`,
-      max_results: 500,
-      resource_type: 'image',
-    });
+    const photos = await cloudinary.search
+      .expression(`asset_folder=${category}/${location}`)
+      .sort_by('created_at', 'asc')
+      .max_results(500)
+      .execute();
 
     if (photos.resources.length === 0) return null;
 
@@ -79,7 +84,8 @@ export async function getGalleryByLocation(
       title: formatLocationName(location),
       photos: photos.resources.map((photo: any) => ({
         src: buildCloudinaryUrl(photo.public_id),
-        orientation: photo.height > photo.width ? 'portrait' as const : 'landscape' as const,
+        orientation:
+          photo.height > photo.width ? 'portrait' : 'landscape',
       })),
     };
   } catch (error) {
