@@ -1,10 +1,15 @@
 @import "tailwindcss";
 
+:root {
+  --background: #fafafa;
+  --foreground: #171717;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
   overscroll-behavior-y: none;
-  font-family: Arial, Helvetica, sans-serif
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
 }
 
 @keyframes heroIn {
@@ -29,4 +34,14 @@ body {
 
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+.grain-overlay {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  opacity: 0.12;
+  mix-blend-mode: multiply;
+  background-image: url('/grain.png');
+  background-repeat: repeat;
 }

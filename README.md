@@ -1,36 +1,74 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Rafael Hennig — Photography Portfolio
 
-## Getting Started
+A Next.js portfolio site for Rafael Hennig, featuring analog and digital photography galleries powered by Cloudinary.
 
-First, run the development server:
+## Requirements
+
+- Node.js >= 20.9.0 (see `.nvmrc`)
+
+## Setup
+
+1. Install dependencies:
+
+```bash
+npm install
+```
+
+2. Copy the environment template and fill in your Cloudinary credentials:
+
+```bash
+cp .env.example .env.local
+```
+
+3. Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to view the site.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Cloudinary folder structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Organize assets in Cloudinary with this folder layout:
 
-## Learn More
+```
+analog/
+  berlin/
+    photo1.jpg
+    photo2.jpg
+  lisbon/
+    ...
+digital/
+  berlin/
+    ...
+about/
+  portrait.jpg   ← optional, used in the About section
+```
 
-To learn more about Next.js, take a look at the following resources:
+Subfolder names become gallery titles (e.g. `new-york` → "New York").
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Environment variables
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `CLOUDINARY_CLOUD_NAME` | Yes | Cloudinary cloud name |
+| `CLOUDINARY_API_KEY` | Yes | Cloudinary API key |
+| `CLOUDINARY_API_SECRET` | Yes | Cloudinary API secret |
+| `NEXT_PUBLIC_SITE_URL` | No | Canonical site URL for Open Graph |
+| `NEXT_PUBLIC_INSTAGRAM_URL` | No | Instagram profile URL |
+| `NEXT_PUBLIC_BEHANCE_URL` | No | Behance profile URL |
+| `NEXT_PUBLIC_LINKEDIN_URL` | No | LinkedIn profile URL |
 
-## Deploy on Vercel
+## Scripts
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+npm run dev     # Start development server
+npm run build   # Production build
+npm run start   # Start production server
+npm run lint    # Run ESLint
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Deployment
+
+Deploy to [Vercel](https://vercel.com) or any platform that supports Next.js. Set the environment variables in your deployment settings. Gallery data is cached for 1 hour (ISR).

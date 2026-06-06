@@ -1,5 +1,5 @@
 import { v2 as cloudinary } from 'cloudinary';
-import { Photo } from '@/app/components/sections/GallerySection';
+import type { GalleryFetchResult, Photo } from '@/app/lib/types';
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -7,10 +7,8 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export type Gallery = {
-  id: string;
-  title: string;
-  photos: Photo[];
+type CloudinaryFolder = {
+  name: string;
 };
 
 type CloudinaryResource = {
@@ -19,16 +17,35 @@ type CloudinaryResource = {
   height: number;
 };
 
+function formatLocationName(folderName: string): string {
+  return folderName
+    .split('-')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
+function buildCloudinaryUrl(publicId: string, width: number): string {
+  return `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/f_auto,q_auto,w_${width}/${publicId}`;
+}
+
+function mapResourceToPhoto(resource: CloudinaryResource): Photo {
+  return {
+    src: buildCloudinaryUrl(resource.public_id, 600),
+    fullSrc: buildCloudinaryUrl(resource.public_id, 2400),
+    orientation: resource.height > resource.width ? 'portrait' : 'landscape',
+  };
+}
+
 export async function getGalleriesByCategory(
   category: 'analog' | 'digital',
-): Promise<Gallery[]> {
+): Promise<GalleryFetchResult> {
   try {
     const result = await cloudinary.api.sub_folders(category, {
       max_results: 500,
     });
 
     const galleries = await Promise.all(
-      result.folders.map(async (folder: any) => {
+      (result.folders as CloudinaryFolder[]).map(async (folder) => {
         const photos = await cloudinary.search
           .expression(`asset_folder=${category}/${folder.name}`)
           .sort_by('created_at', 'asc')
@@ -38,58 +55,39 @@ export async function getGalleriesByCategory(
         return {
           id: folder.name,
           title: formatLocationName(folder.name),
-          photos: photos.resources.map((photo: CloudinaryResource) => ({
-            src: buildCloudinaryUrl(photo.public_id),
-            orientation: photo.height > photo.width ? 'portrait' : 'landscape',
-          })),
+          photos: (photos.resources as CloudinaryResource[]).map(
+            mapResourceToPhoto,
+          ),
         };
       }),
     );
 
-    return galleries
-      .filter((g) => g.photos.length > 0)
-      .sort((a, b) => a.id.localeCompare(b.id));
+    return {
+      galleries: galleries
+        .filter((gallery) => gallery.photos.length > 0)
+        .sort((a, b) => a.id.localeCompare(b.id)),
+      failed: false,
+    };
   } catch (error) {
     console.error(`Error fetching ${category} galleries:`, error);
-    return [];
+    return { galleries: [], failed: true };
   }
 }
 
-function formatLocationName(folderName: string): string {
-  return folderName
-    .split('-')
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
-}
-
-function buildCloudinaryUrl(publicId: string): string {
-  return `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/f_auto,q_auto,w_1200/${publicId}`;
-}
-
-export async function getGalleryByLocation(
-  category: 'analog' | 'digital',
-  location: string,
-): Promise<Gallery | null> {
+export async function getAboutPhotoUrl(): Promise<string | null> {
   try {
-    const photos = await cloudinary.search
-      .expression(`asset_folder=${category}/${location}`)
-      .sort_by('created_at', 'asc')
-      .max_results(500)
+    const result = await cloudinary.search
+      .expression('asset_folder=about')
+      .sort_by('created_at', 'desc')
+      .max_results(1)
       .execute();
 
-    if (photos.resources.length === 0) return null;
+    const resource = result.resources[0] as CloudinaryResource | undefined;
+    if (!resource) return null;
 
-    return {
-      id: location,
-      title: formatLocationName(location),
-      photos: photos.resources.map((photo: any) => ({
-        src: buildCloudinaryUrl(photo.public_id),
-        orientation:
-          photo.height > photo.width ? 'portrait' : 'landscape',
-      })),
-    };
+    return buildCloudinaryUrl(resource.public_id, 800);
   } catch (error) {
-    console.error(`Error fetching gallery ${category}/${location}:`, error);
+    console.error('Error fetching about photo:', error);
     return null;
   }
 }

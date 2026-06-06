@@ -1,20 +1,16 @@
-"use client";
+'use client';
 
 import React, { useState } from 'react';
-import { PhotoGallerySection, Photo } from '../sections/GallerySection';
-
-export type Gallery = {
-  id: string;
-  title: string;
-  photos: Photo[];
-};
+import { PhotoGallerySection } from '@/app/components/sections/GallerySection';
+import type { Gallery, Photo } from '@/app/lib/types';
 
 interface ExpandableGalleriesProps {
   title: string;
   galleries: Gallery[];
-  onImageClick: (photo: string, index: number, photos: Photo[]) => void;
-  onImageHover: (id: string | null) => void;
+  onImageClick: (index: number, photos: Photo[]) => void;
+  onImageHover: (hovered: boolean) => void;
   initialShowCount?: number;
+  sectionId?: string;
 }
 
 export const ExpandableGalleries: React.FC<ExpandableGalleriesProps> = ({
@@ -23,10 +19,13 @@ export const ExpandableGalleries: React.FC<ExpandableGalleriesProps> = ({
   onImageClick,
   onImageHover,
   initialShowCount = 2,
+  sectionId,
 }) => {
   const [showAll, setShowAll] = useState(false);
-  
-  const visibleGalleries = showAll ? galleries : galleries.slice(0, initialShowCount);
+
+  const visibleGalleries = showAll
+    ? galleries
+    : galleries.slice(0, initialShowCount);
   const hasMore = galleries.length > initialShowCount;
 
   if (galleries.length === 0) {
@@ -34,8 +33,8 @@ export const ExpandableGalleries: React.FC<ExpandableGalleriesProps> = ({
   }
 
   return (
-    <div className="py-8 md:py-12 ">
-      <h2 className="text-4xl md:text-6xl font-light tracking-tight mb-8 px-6 md:px-12 max-w-screen-2xl mx-auto ">
+    <div id={sectionId} className="py-8 md:py-12 scroll-mt-24">
+      <h2 className="text-4xl md:text-6xl font-light tracking-tight mb-8 px-6 md:px-12 max-w-screen-2xl mx-auto">
         {title}
       </h2>
       <div className="space-y-12 md:space-y-20">
@@ -55,10 +54,9 @@ export const ExpandableGalleries: React.FC<ExpandableGalleriesProps> = ({
             onClick={() => setShowAll(!showAll)}
             className="px-10 py-4 bg-neutral-900 text-white rounded-full text-base font-light hover:bg-neutral-700 transition-all duration-300 shadow-lg hover:shadow-xl"
           >
-            {showAll 
-              ? '− Show Less' 
-              : `+ Show ${galleries.length - initialShowCount} More`
-            }
+            {showAll
+              ? '− Show Less'
+              : `+ Show ${galleries.length - initialShowCount} More`}
           </button>
         </div>
       )}

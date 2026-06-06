@@ -1,19 +1,18 @@
-import React from "react";
+import React from 'react';
+import Image from 'next/image';
 
-export const AboutSection: React.FC = () => {
+interface AboutSectionProps {
+  aboutPhotoUrl: string | null;
+}
+
+export const AboutSection: React.FC<AboutSectionProps> = ({ aboutPhotoUrl }) => {
   return (
     <section
       id="about"
-      className="relative w-full py-6 md:py-10"
-      style={{ backgroundColor: "#f4f3f1" }}
+      className="relative w-full py-6 md:py-10 scroll-mt-24"
+      style={{ backgroundColor: '#f4f3f1' }}
     >
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.12]"
-        style={{
-          backgroundImage: 'url("/grain.png")',
-          backgroundRepeat: "repeat",
-        }}
-      />
+      <div className="grain-overlay" aria-hidden="true" />
       <div className="relative px-6 md:px-12 max-w-screen-2xl mx-auto">
         <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
           <div>
@@ -26,7 +25,7 @@ export const AboutSection: React.FC = () => {
                 I am Rafael Hennig, a Brazilian, Berlin-based photographer and
                 filmmaker working across analog and digital. My work moves between
                 cities and continents, tracing light, texture, and the quiet
-                moments that tell a place’s story.
+                moments that tell a place&apos;s story.
               </p>
 
               <p>
@@ -41,15 +40,20 @@ export const AboutSection: React.FC = () => {
               </p>
             </div>
           </div>
-          <div className="relative overflow-hidden bg-neutral-200 aspect-4/5 group">
-            <img
-              src="https://images.unsplash.com/photo-1618556450994-a6a128ef0d9d?w=800&h=1000&fit=crop"
-              alt="About Rafael Hennig"
-              className="w-full h-full object-cover transition-transform duration-1200ms ease-out group-hover:scale-105"
-              draggable={false}
-            />
-            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-700" />
-          </div>
+
+          {aboutPhotoUrl && (
+            <div className="relative overflow-hidden bg-neutral-200 aspect-4/5 group">
+              <Image
+                src={aboutPhotoUrl}
+                alt="About Rafael Hennig"
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-cover transition-transform duration-1200 ease-out group-hover:scale-105"
+                draggable={false}
+              />
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-700" />
+            </div>
+          )}
         </div>
       </div>
     </section>
