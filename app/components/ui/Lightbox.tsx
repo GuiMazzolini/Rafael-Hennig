@@ -10,6 +10,8 @@ interface LightboxProps {
   onClose: () => void;
 }
 
+const SWIPE_THRESHOLD = 50;
+
 export const Lightbox: React.FC<LightboxProps> = ({
   images,
   startIndex,
@@ -19,6 +21,7 @@ export const Lightbox: React.FC<LightboxProps> = ({
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
+  const touchStartRef = useRef<{ x: number; y: number } | null>(null);
 
   const hasPrev = index > 0;
   const hasNext = index < images.length - 1;
@@ -30,6 +33,27 @@ export const Lightbox: React.FC<LightboxProps> = ({
   const goNext = useCallback(() => {
     setIndex((i) => (i < images.length - 1 ? i + 1 : i));
   }, [images.length]);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartRef.current = {
+      x: e.touches[0].clientX,
+      y: e.touches[0].clientY,
+    };
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const start = touchStartRef.current;
+    touchStartRef.current = null;
+    if (!start) return;
+
+    const dx = e.changedTouches[0].clientX - start.x;
+    const dy = e.changedTouches[0].clientY - start.y;
+
+    if (Math.abs(dx) < SWIPE_THRESHOLD || Math.abs(dx) < Math.abs(dy)) return;
+
+    if (dx < 0) goNext();
+    else goPrev();
+  };
 
   useEffect(() => {
     previousFocusRef.current = document.activeElement as HTMLElement | null;
@@ -74,7 +98,7 @@ export const Lightbox: React.FC<LightboxProps> = ({
   return (
     <div
       ref={dialogRef}
-      className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center backdrop-blur-sm"
+      className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center backdrop-blur-sm touch-none"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
@@ -95,7 +119,7 @@ export const Lightbox: React.FC<LightboxProps> = ({
             e.stopPropagation();
             goPrev();
           }}
-          className="absolute left-6 md:left-10 text-white opacity-80 hover:opacity-100 transition-opacity z-10"
+          className="absolute left-6 md:left-10 text-white opacity-80 hover:opacity-100 transition-opacity z-10 hidden md:block"
           aria-label="Previous image"
         >
           <ChevronLeft size={48} />
@@ -108,7 +132,7 @@ export const Lightbox: React.FC<LightboxProps> = ({
             e.stopPropagation();
             goNext();
           }}
-          className="absolute right-6 md:right-10 text-white opacity-80 hover:opacity-100 transition-opacity z-10"
+          className="absolute right-6 md:right-10 text-white opacity-80 hover:opacity-100 transition-opacity z-10 hidden md:block"
           aria-label="Next image"
         >
           <ChevronRight size={48} />
@@ -116,8 +140,10 @@ export const Lightbox: React.FC<LightboxProps> = ({
       )}
 
       <div
-        className="relative w-full h-full max-w-[90vw] max-h-[90vh] mx-12"
+        className="relative w-full h-full max-w-[90vw] max-h-[90vh] mx-4 md:mx-12"
         onClick={(e) => e.stopPropagation()}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
       >
         <Image
           src={image}
@@ -125,10 +151,14 @@ export const Lightbox: React.FC<LightboxProps> = ({
           fill
           sizes="90vw"
           priority
-          className="object-contain select-none"
+          className="object-contain select-none pointer-events-none"
           draggable={false}
         />
       </div>
+
+      <p className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/60 text-sm tabular-nums">
+        {index + 1} / {images.length}
+      </p>
     </div>
   );
 };
