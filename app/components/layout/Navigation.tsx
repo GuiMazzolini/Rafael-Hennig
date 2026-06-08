@@ -1,20 +1,24 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
 
 interface NavigationProps {
   scrolled: boolean;
 }
 
+const navLinks = [
+  { href: '/photos', label: 'Photos' },
+  { href: '/videos', label: 'Videos' },
+  { href: '/#about', label: 'About' },
+  { href: '/#contact', label: 'Contact' },
+];
+
 export const Navigation: React.FC<NavigationProps> = ({ scrolled }) => {
   const [menuOpen, setMenuOpen] = useState(false);
-
-  const navLinks = [
-    { href: '#work', label: 'Work' },
-    { href: '#about', label: 'About' },
-    { href: '#contact', label: 'Contact' },
-  ];
+  const pathname = usePathname();
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? 'hidden' : '';
@@ -23,26 +27,26 @@ export const Navigation: React.FC<NavigationProps> = ({ scrolled }) => {
     };
   }, [menuOpen]);
 
+  const isActive = (href: string) => {
+    if (href.startsWith('/#')) return pathname === '/';
+    return pathname === href;
+  };
+
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500
-  ${
-    scrolled
-      ? 'bg-neutral-50/90 backdrop-blur-md py-4 shadow-sm text-neutral-900'
-      : 'bg-transparent py-8 text-neutral-700'
-  }`}
+      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ${
+        scrolled
+          ? 'bg-neutral-50/90 backdrop-blur-md py-4 shadow-sm text-neutral-900'
+          : 'bg-transparent py-8 text-neutral-700'
+      }`}
     >
       <div className="max-w-screen-2xl mx-auto px-6 md:px-12 flex items-center justify-between">
-        <a
-          href="#"
-          className="
-    text-lg md:text-xl
-    font-light tracking-tight
-    hover:opacity-60 transition-opacity
-  "
+        <Link
+          href="/"
+          className="text-lg md:text-xl font-light tracking-tight hover:opacity-60 transition-opacity"
         >
           Rafael Hennig
-        </a>
+        </Link>
 
         <button
           onClick={() => setMenuOpen(!menuOpen)}
@@ -54,39 +58,34 @@ export const Navigation: React.FC<NavigationProps> = ({ scrolled }) => {
 
         <div className="hidden md:flex gap-8 text-sm tracking-wide">
           {navLinks.map((link) => (
-            <a
+            <Link
               key={link.href}
               href={link.href}
-              className="
-    relative
-    after:absolute after:left-0 after:-bottom-1
-    after:h-px after:w-0 after:bg-current
-    after:transition-all after:duration-300
-    hover:after:w-full
-    hover:opacity-60
-  "
+              className={`relative after:absolute after:left-0 after:-bottom-1 after:h-px after:bg-current after:transition-all after:duration-300 hover:opacity-60 ${
+                isActive(link.href) ? 'after:w-full' : 'after:w-0 hover:after:w-full'
+              }`}
             >
               {link.label}
-            </a>
+            </Link>
           ))}
         </div>
       </div>
 
       <div
         className={`md:hidden bg-neutral-50/95 backdrop-blur-md transition-all duration-300 overflow-hidden ${
-          menuOpen ? 'max-h-48 border-t border-neutral-200 mt-4' : 'max-h-0'
+          menuOpen ? 'max-h-64 border-t border-neutral-200 mt-4' : 'max-h-0'
         }`}
       >
         <div className="px-6 py-8 flex flex-col gap-6">
           {navLinks.map((link) => (
-            <a
+            <Link
               key={link.href}
               href={link.href}
               onClick={() => setMenuOpen(false)}
               className="text-lg hover:opacity-60 transition-opacity"
             >
               {link.label}
-            </a>
+            </Link>
           ))}
         </div>
       </div>

@@ -2,34 +2,57 @@ import { cache } from 'react';
 import {
   getAboutPhotoUrl,
   getGalleriesByCategory,
+  getNewestPhotos,
+  getVideos,
 } from '@/app/lib/cloudinary';
-import type { Gallery } from '@/app/lib/types';
+import type { Gallery, Photo, Video } from '@/app/lib/types';
 
-type PortfolioData = {
-  analogGalleries: Gallery[];
-  digitalGalleries: Gallery[];
-  galleryLoadFailed: boolean;
+type HomeData = {
+  newestPhotos: Photo[];
   aboutPhotoUrl: string | null;
   ogImage: string | null;
 };
 
-export const getPortfolioData = cache(async (): Promise<PortfolioData> => {
-  const [analog, digital, aboutPhotoUrl] = await Promise.all([
-    getGalleriesByCategory('analog'),
-    getGalleriesByCategory('digital'),
+type PhotosData = {
+  analogGalleries: Gallery[];
+  digitalGalleries: Gallery[];
+  galleryLoadFailed: boolean;
+};
+
+type VideosData = {
+  videos: Video[];
+  videosLoadFailed: boolean;
+};
+
+export const getHomeData = cache(async (): Promise<HomeData> => {
+  const [newestPhotos, aboutPhotoUrl] = await Promise.all([
+    getNewestPhotos(5),
     getAboutPhotoUrl(),
   ]);
 
-  const ogImage =
-    analog.galleries[0]?.photos[0]?.fullSrc ??
-    digital.galleries[0]?.photos[0]?.fullSrc ??
-    aboutPhotoUrl;
+  const ogImage = newestPhotos[0]?.fullSrc ?? aboutPhotoUrl;
+
+  return { newestPhotos, aboutPhotoUrl, ogImage };
+});
+
+export const getPhotosData = cache(async (): Promise<PhotosData> => {
+  const [analog, digital] = await Promise.all([
+    getGalleriesByCategory('analog'),
+    getGalleriesByCategory('digital'),
+  ]);
 
   return {
     analogGalleries: analog.galleries,
     digitalGalleries: digital.galleries,
     galleryLoadFailed: analog.failed || digital.failed,
-    aboutPhotoUrl,
-    ogImage,
+  };
+});
+
+export const getVideosData = cache(async (): Promise<VideosData> => {
+  const result = await getVideos();
+
+  return {
+    videos: result.videos,
+    videosLoadFailed: result.failed,
   };
 });

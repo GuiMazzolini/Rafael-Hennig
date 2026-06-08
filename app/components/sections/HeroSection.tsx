@@ -1,19 +1,17 @@
 import React from 'react';
+import { HeroPhotoStack } from '@/app/components/sections/HeroPhotoStack';
+import type { Photo } from '@/app/lib/types';
 
-export const HeroSection: React.FC = () => {
+interface HeroSectionProps {
+  photos: Photo[];
+}
+
+export const HeroSection: React.FC<HeroSectionProps> = ({ photos }) => {
   return (
     <section className="relative bg-[#f7f7f6] pt-32 md:pt-48 pb-24 md:pb-32 px-6 md:px-12 overflow-hidden">
       <div className="grain-overlay" aria-hidden="true" />
       <div className="relative animate-hero max-w-screen-2xl mx-auto">
-        <h1 className="text-5xl md:text-7xl lg:text-8xl font-light leading-[0.95] tracking-tight">
-          Photographer
-          <span className="block ml-3 md:ml-24 text-neutral-500">
-            Cinematographer
-          </span>
-        </h1>
-        <p className="mt-10 text-neutral-800 max-w-lg leading-relaxed">
-          Berlin-based visual artist working between analog and digital.
-        </p>
+        <HeroPhotoStack photos={photos} />
       </div>
     </section>
   );

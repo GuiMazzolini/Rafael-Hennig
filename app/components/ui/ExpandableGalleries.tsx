@@ -8,7 +8,6 @@ interface ExpandableGalleriesProps {
   title: string;
   galleries: Gallery[];
   onImageClick: (index: number, photos: Photo[]) => void;
-  onImageHover: (hovered: boolean) => void;
   initialShowCount?: number;
   sectionId?: string;
 }
@@ -17,7 +16,6 @@ export const ExpandableGalleries: React.FC<ExpandableGalleriesProps> = ({
   title,
   galleries,
   onImageClick,
-  onImageHover,
   initialShowCount = 2,
   sectionId,
 }) => {
@@ -44,7 +42,6 @@ export const ExpandableGalleries: React.FC<ExpandableGalleriesProps> = ({
             title={gallery.title}
             photos={gallery.photos}
             onImageClick={onImageClick}
-            onImageHover={onImageHover}
           />
         ))}
       </div>

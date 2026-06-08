@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
-import { getPortfolioData } from '@/app/lib/galleries';
+import { getHomeData } from '@/app/lib/galleries';
 import { siteConfig } from '@/app/lib/site';
-import PhotographyPortfolioClient from './PhotographyPortfolioClient';
+import HomeClient from './HomeClient';
 
 export const revalidate = 3600;
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { ogImage } = await getPortfolioData();
+  const { ogImage } = await getHomeData();
 
   return {
     title: `${siteConfig.name} - Photographer & Cinematographer`,
@@ -31,7 +31,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Home() {
-  const data = await getPortfolioData();
+  const data = await getHomeData();
 
-  return <PhotographyPortfolioClient {...data} />;
+  return <HomeClient {...data} />;
 }

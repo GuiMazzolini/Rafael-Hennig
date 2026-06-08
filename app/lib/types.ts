@@ -14,3 +14,15 @@ export type GalleryFetchResult = {
   galleries: Gallery[];
   failed: boolean;
 };
+
+export type Video = {
+  id: string;
+  title: string;
+  src: string;
+  poster: string;
+};
+
+export type VideoFetchResult = {
+  videos: Video[];
+  failed: boolean;
+};

@@ -9,14 +9,12 @@ interface PhotoGallerySectionProps {
   title: string;
   photos: Photo[];
   onImageClick: (index: number, photos: Photo[]) => void;
-  onImageHover: (hovered: boolean) => void;
 }
 
 export const PhotoGallerySection: React.FC<PhotoGallerySectionProps> = ({
   title,
   photos,
   onImageClick,
-  onImageHover,
 }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -106,8 +104,6 @@ export const PhotoGallerySection: React.FC<PhotoGallerySectionProps> = ({
             <button
               key={`${title}-${idx}`}
               onClick={() => onImageClick(idx, photos)}
-              onMouseEnter={() => onImageHover(true)}
-              onMouseLeave={() => onImageHover(false)}
               className="shrink-0 snap-center cursor-pointer group"
             >
               <div

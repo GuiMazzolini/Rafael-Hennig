@@ -1,6 +1,14 @@
 # Rafael Hennig — Photography Portfolio
 
-A Next.js portfolio site for Rafael Hennig, featuring analog and digital photography galleries powered by Cloudinary.
+A Next.js portfolio site for Rafael Hennig — landing page, photo galleries, and films — powered by Cloudinary.
+
+## Site structure
+
+| Route | Content |
+|-------|---------|
+| `/` | Hero, 5 newest photos, About, Contact |
+| `/photos` | Full analog & digital galleries |
+| `/videos` | Film / cinematography work |
 
 ## Requirements
 
@@ -36,17 +44,21 @@ Organize assets in Cloudinary with this folder layout:
 analog/
   berlin/
     photo1.jpg
-    photo2.jpg
   lisbon/
     ...
 digital/
   berlin/
     ...
+videos/
+  showreel.mp4
+  project-name.mp4
 about/
   portrait.jpg   ← optional, used in the About section
 ```
 
-Subfolder names become gallery titles (e.g. `new-york` → "New York").
+- **Home page** shows the 5 most recently uploaded photos from `analog/` and `digital/`.
+- **Photo galleries** use subfolder names as titles (e.g. `new-york` → "New York").
+- **Videos** are loaded from the `videos/` folder.
 
 ## Environment variables
 
