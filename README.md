@@ -49,16 +49,22 @@ analog/
 digital/
   berlin/
     ...
-videos/
-  showreel.mp4
-  project-name.mp4
 about/
   portrait.jpg   ← optional, used in the About section
 ```
 
 - **Home page** shows the 5 most recently uploaded photos from `analog/` and `digital/`.
 - **Photo galleries** use subfolder names as titles (e.g. `new-york` → "New York").
-- **Videos** are loaded from the `videos/` folder.
+- **Videos** are loaded from **Vimeo** (title and description come from Vimeo automatically).
+
+## Vimeo setup
+
+1. Create an app at [Vimeo Developer](https://developer.vimeo.com/apps) and generate a **Personal Access Token** with `public` and `private` video scopes.
+2. Add `VIMEO_ACCESS_TOKEN` to `.env.local`.
+3. By default, the site fetches videos from the authenticated account (`/me/videos`).
+4. Optionally set `VIMEO_USER_ID` to pull from a specific user, or `VIMEO_ALBUM_ID` + `VIMEO_USER_ID` to pull from a showcase/album only.
+
+Titles and descriptions are read from each video's Vimeo metadata.
 
 ## Environment variables
 
@@ -67,6 +73,9 @@ about/
 | `CLOUDINARY_CLOUD_NAME` | Yes | Cloudinary cloud name |
 | `CLOUDINARY_API_KEY` | Yes | Cloudinary API key |
 | `CLOUDINARY_API_SECRET` | Yes | Cloudinary API secret |
+| `VIMEO_ACCESS_TOKEN` | Yes | Vimeo personal access token |
+| `VIMEO_USER_ID` | No | Vimeo user ID (defaults to token owner) |
+| `VIMEO_ALBUM_ID` | No | Vimeo showcase/album ID to filter videos |
 | `REVALIDATION_SECRET` | Recommended | Secret for `/api/revalidate` (webhook + manual refresh) |
 | `NEXT_PUBLIC_SITE_URL` | No | Canonical site URL for Open Graph |
 | `NEXT_PUBLIC_INSTAGRAM_URL` | No | Instagram profile URL |

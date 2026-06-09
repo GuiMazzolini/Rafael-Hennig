@@ -18,8 +18,10 @@ export type GalleryFetchResult = {
 export type Video = {
   id: string;
   title: string;
-  src: string;
+  description: string | null;
+  embedUrl: string;
   poster: string;
+  link: string;
 };
 
 export type VideoFetchResult = {

@@ -1,10 +1,5 @@
 import { v2 as cloudinary } from 'cloudinary';
-import type {
-  GalleryFetchResult,
-  Photo,
-  Video,
-  VideoFetchResult,
-} from '@/app/lib/types';
+import type { GalleryFetchResult, Photo } from '@/app/lib/types';
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -34,30 +29,11 @@ function buildCloudinaryUrl(publicId: string, width: number): string {
   return `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/f_auto,q_auto,w_${width}/${publicId}`;
 }
 
-function buildCloudinaryVideoUrl(publicId: string): string {
-  return `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/video/upload/q_auto,f_auto/${publicId}`;
-}
-
-function buildVideoPosterUrl(publicId: string): string {
-  return `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/video/upload/so_0,w_800,f_auto,q_auto/${publicId}.jpg`;
-}
-
 function mapResourceToPhoto(resource: CloudinaryResource): Photo {
   return {
     src: buildCloudinaryUrl(resource.public_id, 600),
     fullSrc: buildCloudinaryUrl(resource.public_id, 2400),
     orientation: resource.height > resource.width ? 'portrait' : 'landscape',
-  };
-}
-
-function mapResourceToVideo(resource: CloudinaryResource): Video {
-  const name = resource.public_id.split('/').pop() ?? resource.public_id;
-
-  return {
-    id: resource.public_id,
-    title: formatLocationName(name.replace(/\.[^.]+$/, '')),
-    src: buildCloudinaryVideoUrl(resource.public_id),
-    poster: buildVideoPosterUrl(resource.public_id),
   };
 }
 
@@ -131,24 +107,6 @@ export async function getGalleriesByCategory(
   } catch (error) {
     console.error(`Error fetching ${category} galleries:`, error);
     return { galleries: [], failed: true };
-  }
-}
-
-export async function getVideos(): Promise<VideoFetchResult> {
-  try {
-    const result = await cloudinary.search
-      .expression('resource_type:video AND asset_folder:videos/*')
-      .sort_by('created_at', 'desc')
-      .max_results(500)
-      .execute();
-
-    return {
-      videos: (result.resources as CloudinaryResource[]).map(mapResourceToVideo),
-      failed: false,
-    };
-  } catch (error) {
-    console.error('Error fetching videos:', error);
-    return { videos: [], failed: true };
   }
 }
 

@@ -3,8 +3,8 @@ import {
   getAboutPhotoUrl,
   getGalleriesByCategory,
   getNewestPhotos,
-  getVideos,
 } from '@/app/lib/cloudinary';
+import { getVideos } from '@/app/lib/vimeo';
 import type { Gallery, Photo, Video } from '@/app/lib/types';
 
 type HomeData = {

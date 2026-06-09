@@ -34,22 +34,29 @@ const VideosClient: React.FC<VideosClientProps> = ({
       )}
 
       {!videosLoadFailed && videos.length > 0 && (
-        <div className="px-6 md:px-12 pb-24 md:pb-40 max-w-screen-2xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+        <div className="px-6 md:px-12 pb-24 md:pb-40 max-w-screen-2xl mx-auto space-y-12 md:space-y-16">
           {videos.map((video) => (
-            <article key={video.id} className="space-y-4">
+            <article key={video.id} className="space-y-5">
               <div className="relative aspect-video overflow-hidden rounded-sm bg-neutral-900">
-                <video
-                  src={video.src}
-                  poster={video.poster}
-                  controls
-                  playsInline
-                  preload="metadata"
-                  className="w-full h-full object-contain"
+                <iframe
+                  src={`${video.embedUrl}?badge=0&autopause=0`}
+                  title={video.title}
+                  className="absolute inset-0 h-full w-full"
+                  allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
+                  allowFullScreen
                 />
               </div>
-              <h2 className="text-lg md:text-xl font-light text-neutral-800">
-                {video.title}
-              </h2>
+
+              <div className="space-y-2">
+                <h2 className="text-xl md:text-2xl font-light text-neutral-900">
+                  {video.title}
+                </h2>
+                {video.description && (
+                  <p className="text-neutral-600 leading-relaxed max-w-3xl whitespace-pre-line">
+                    {video.description}
+                  </p>
+                )}
+              </div>
             </article>
           ))}
         </div>
