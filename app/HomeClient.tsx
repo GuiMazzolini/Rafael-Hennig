@@ -4,20 +4,15 @@ import React, { useState, useCallback } from 'react';
 import { SiteShell } from '@/app/components/layout/SiteShell';
 import { HeroSection } from '@/app/components/sections/HeroSection';
 import { FeaturedPhotosSection } from '@/app/components/sections/FeaturedPhotosSection';
-import { AboutSection } from '@/app/components/sections/AboutSection';
 import { ContactSection } from '@/app/components/sections/ContactSection';
 import { Lightbox } from '@/app/components/ui/Lightbox';
 import type { Photo } from '@/app/lib/types';
 
 interface HomeClientProps {
   newestPhotos: Photo[];
-  aboutPhotoUrl: string | null;
 }
 
-const HomeClient: React.FC<HomeClientProps> = ({
-  newestPhotos,
-  aboutPhotoUrl,
-}) => {
+const HomeClient: React.FC<HomeClientProps> = ({ newestPhotos }) => {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [lightboxImages, setLightboxImages] = useState<string[]>([]);
 
@@ -33,7 +28,6 @@ const HomeClient: React.FC<HomeClientProps> = ({
         photos={newestPhotos}
         onImageClick={handleImageClick}
       />
-      <AboutSection aboutPhotoUrl={aboutPhotoUrl} />
       <ContactSection />
 
       {lightboxIndex !== null && (

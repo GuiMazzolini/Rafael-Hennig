@@ -9,8 +9,11 @@ import type { Gallery, Photo, Video } from '@/app/lib/types';
 
 type HomeData = {
   newestPhotos: Photo[];
-  aboutPhotoUrl: string | null;
   ogImage: string | null;
+};
+
+type AboutData = {
+  aboutPhotoUrl: string | null;
 };
 
 type PhotosData = {
@@ -25,14 +28,16 @@ type VideosData = {
 };
 
 export const getHomeData = cache(async (): Promise<HomeData> => {
-  const [newestPhotos, aboutPhotoUrl] = await Promise.all([
-    getNewestPhotos(5),
-    getAboutPhotoUrl(),
-  ]);
+  const newestPhotos = await getNewestPhotos(5);
+  const ogImage = newestPhotos[0]?.fullSrc ?? null;
 
-  const ogImage = newestPhotos[0]?.fullSrc ?? aboutPhotoUrl;
+  return { newestPhotos, ogImage };
+});
 
-  return { newestPhotos, aboutPhotoUrl, ogImage };
+export const getAboutData = cache(async (): Promise<AboutData> => {
+  const aboutPhotoUrl = await getAboutPhotoUrl();
+
+  return { aboutPhotoUrl };
 });
 
 export const getPhotosData = cache(async (): Promise<PhotosData> => {

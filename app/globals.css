@@ -3,6 +3,7 @@
 :root {
   --background: #fafafa;
   --foreground: #171717;
+  --surface-warm: #e8e5e1;
 }
 
 body {
@@ -44,4 +45,8 @@ body {
   mix-blend-mode: multiply;
   background-image: url('/grain.png');
   background-repeat: repeat;
+}
+
+.warm-surface {
+  background-color: var(--surface-warm);
 }

@@ -4,19 +4,24 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
+import { siteConfig } from '@/app/lib/site';
 
 interface NavigationProps {
   scrolled: boolean;
+  showContactSubtitle: boolean;
 }
 
 const navLinks = [
   { href: '/photos', label: 'Photos' },
   { href: '/videos', label: 'Videos' },
-  { href: '/#about', label: 'About' },
+  { href: '/about', label: 'About' },
   { href: '/#contact', label: 'Contact' },
 ];
 
-export const Navigation: React.FC<NavigationProps> = ({ scrolled }) => {
+export const Navigation: React.FC<NavigationProps> = ({
+  scrolled,
+  showContactSubtitle,
+}) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
 
@@ -28,7 +33,9 @@ export const Navigation: React.FC<NavigationProps> = ({ scrolled }) => {
   }, [menuOpen]);
 
   const isActive = (href: string) => {
-    if (href.startsWith('/#')) return pathname === '/';
+    if (href === '/#contact') {
+      return pathname === '/' && showContactSubtitle;
+    }
     return pathname === href;
   };
 
@@ -46,6 +53,15 @@ export const Navigation: React.FC<NavigationProps> = ({ scrolled }) => {
           className="text-lg md:text-xl font-light tracking-tight hover:opacity-60 transition-opacity"
         >
           Rafael Hennig
+          <span
+            className={`block text-[11px] md:text-xs font-normal tracking-wide text-neutral-500 transition-all duration-300 overflow-hidden ${
+              showContactSubtitle
+                ? 'max-h-5 opacity-100 mt-1'
+                : 'max-h-0 opacity-0'
+            }`}
+          >
+            {siteConfig.email}
+          </span>
         </Link>
 
         <button
@@ -56,12 +72,12 @@ export const Navigation: React.FC<NavigationProps> = ({ scrolled }) => {
           {menuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
 
-        <div className="hidden md:flex gap-8 text-sm tracking-wide">
+        <div className="hidden md:flex items-center gap-8 text-sm tracking-wide">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className={`relative after:absolute after:left-0 after:-bottom-1 after:h-px after:bg-current after:transition-all after:duration-300 hover:opacity-60 ${
+              className={`relative transition-opacity duration-300 after:absolute after:left-0 after:-bottom-1 after:h-px after:bg-current after:transition-all after:duration-300 hover:opacity-60 ${
                 isActive(link.href) ? 'after:w-full' : 'after:w-0 hover:after:w-full'
               }`}
             >

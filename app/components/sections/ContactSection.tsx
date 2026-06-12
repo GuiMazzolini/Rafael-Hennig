@@ -9,9 +9,10 @@ export const ContactSection: React.FC = () => {
   return (
     <section
       id="contact"
-      className="px-6 md:px-12 max-w-screen-2xl mx-auto pb-24 md:pb-40 scroll-mt-24"
+      className="relative scroll-mt-24 warm-surface"
     >
-      <div className="pt-12 md:pt-24">
+      <div className="grain-overlay" aria-hidden="true" />
+      <div className="relative px-6 md:px-12 max-w-screen-2xl mx-auto py-20 md:py-28">
         <h2 className="text-4xl md:text-6xl font-light tracking-tight mb-12 text-neutral-900">
           Let&apos;s work together
         </h2>

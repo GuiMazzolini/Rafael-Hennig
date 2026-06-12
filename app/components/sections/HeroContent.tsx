@@ -43,22 +43,15 @@ function HeroText() {
         </span>
       </h1>
       <p className="mt-10 text-neutral-800 max-w-lg leading-relaxed">
-        Berlin-based visual artist working between analog and digital.
+        Brazilian, Berlin-based photographer and filmmaker exploring light,
+        place, and the quiet moments in between.
       </p>
-      <div className="mt-8 flex flex-wrap gap-4">
-        <Link
-          href="/photos"
-          className="px-8 py-3.5 bg-neutral-900 text-white rounded-full text-sm font-light hover:bg-neutral-700 transition-all duration-300 shadow-md hover:shadow-lg"
-        >
-          View photos
-        </Link>
-        <Link
-          href="/videos"
-          className="px-8 py-3.5 border border-neutral-400 text-neutral-900 rounded-full text-sm font-light hover:border-neutral-900 hover:bg-neutral-900 hover:text-white transition-all duration-300"
-        >
-          Watch films
-        </Link>
-      </div>
+      <Link
+        href="/about"
+        className="mt-8 inline-block text-sm text-neutral-600 hover:text-neutral-900 transition-colors"
+      >
+        About me →
+      </Link>
     </div>
   );
 }

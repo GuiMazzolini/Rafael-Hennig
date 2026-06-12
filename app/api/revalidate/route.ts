@@ -44,6 +44,7 @@ export async function POST(request: NextRequest) {
   }
 
   revalidatePath('/');
+  revalidatePath('/about');
   revalidatePath('/photos');
   revalidatePath('/videos');
 

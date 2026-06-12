@@ -6,7 +6,8 @@ A Next.js portfolio site for Rafael Hennig — landing page, photo galleries, an
 
 | Route | Content |
 |-------|---------|
-| `/` | Hero, 5 newest photos, About, Contact |
+| `/` | Short intro, 5 newest photos, Contact |
+| `/about` | Full bio and portrait |
 | `/photos` | Full analog & digital galleries |
 | `/videos` | Film / cinematography work |
 
