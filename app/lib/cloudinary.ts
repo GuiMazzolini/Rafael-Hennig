@@ -58,11 +58,13 @@ async function searchImagesInFolder(
     cloudinary.search
       .expression(`resource_type:image AND asset_folder:${folderPrefix}/*`)
       .sort_by('created_at', 'desc')
+      .fields('tags')
       .max_results(limit)
       .execute(),
     cloudinary.search
       .expression(`resource_type:image AND asset_folder:${folderPrefix}`)
       .sort_by('created_at', 'desc')
+      .fields('tags')
       .max_results(limit)
       .execute(),
   ]);
@@ -162,6 +164,7 @@ export async function getGalleriesByCategory(
             `resource_type:image AND asset_folder:${category}/${folder.name}/*`,
           )
           .sort_by('created_at', 'asc')
+          .fields('tags')
           .max_results(500)
           .execute();
 
