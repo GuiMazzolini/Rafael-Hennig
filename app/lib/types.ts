@@ -1,6 +1,8 @@
 export type Photo = {
+  publicId: string;
   src: string;
   fullSrc: string;
+  tags: string[];
   orientation: 'portrait' | 'landscape';
 };
 
