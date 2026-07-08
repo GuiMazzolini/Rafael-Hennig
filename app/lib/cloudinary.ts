@@ -83,20 +83,50 @@ export async function getGalleriesByCategory(
       max_results: 500,
     });
 
+    const folders = (result.folders ?? []) as CloudinaryFolder[];
+
+    // If the user organizes photos directly under `Vão/` (no nested folders like `Berlin/`),
+    // show a single gallery for the whole collection.
+    if (folders.length === 0) {
+      const photos = await cloudinary.search
+        .expression(`resource_type:image AND asset_folder:${category}/*`)
+        .sort_by('created_at', 'asc')
+        .max_results(500)
+        .execute();
+
+      const photoResources = photos.resources as CloudinaryResource[];
+
+      return {
+        galleries: photoResources.length
+          ? [
+              {
+                id: category,
+                // Title is intentionally empty so we don't duplicate the section title ("Vão").
+                title: '',
+                photos: photoResources.map(mapResourceToPhoto),
+              },
+            ]
+          : [],
+        failed: false,
+      };
+    }
+
     const galleries = await Promise.all(
-      (result.folders as CloudinaryFolder[]).map(async (folder) => {
+      folders.map(async (folder) => {
         const photos = await cloudinary.search
-          .expression(`asset_folder=${category}/${folder.name}`)
+          .expression(
+            `resource_type:image AND asset_folder:${category}/${folder.name}/*`,
+          )
           .sort_by('created_at', 'asc')
           .max_results(500)
           .execute();
 
+        const photoResources = photos.resources as CloudinaryResource[];
+
         return {
           id: folder.name,
           title: formatLocationName(folder.name),
-          photos: (photos.resources as CloudinaryResource[]).map(
-            mapResourceToPhoto,
-          ),
+          photos: photoResources.map(mapResourceToPhoto),
         };
       }),
     );

@@ -26,23 +26,27 @@ export const PhotoGallerySection: React.FC<PhotoGallerySectionProps> = ({
     ? photos
     : photos.slice(0, INITIAL_VISIBLE_COUNT);
 
+  const heading = title?.trim();
+
   return (
     <section className="py-4 md:py-8">
       <div className="px-6 md:px-12 max-w-screen-2xl mx-auto">
-        <h3 className="text-xl md:text-2xl text-neutral-700 mb-6 md:mb-8">
-          {title}
-        </h3>
+        {heading && (
+          <h3 className="text-xl md:text-2xl text-neutral-700 mb-6 md:mb-8">
+            {title}
+          </h3>
+        )}
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
           {visiblePhotos.map((photo, idx) => (
             <button
-              key={`${title}-${idx}`}
+              key={`${heading || 'photos'}-${idx}`}
               onClick={() => onImageClick(idx, photos)}
               className="relative aspect-square overflow-hidden rounded-sm cursor-pointer group"
             >
               <Image
                 src={photo.src}
-                alt={`${title} photography ${idx + 1}`}
+                alt={`${heading || 'Photo'} photography ${idx + 1}`}
                 fill
                 sizes="(max-width: 768px) 50vw, 25vw"
                 priority={idx < 4}
