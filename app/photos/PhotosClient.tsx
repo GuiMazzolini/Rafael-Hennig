@@ -8,14 +8,16 @@ import { Lightbox } from '@/app/components/ui/Lightbox';
 import type { Gallery, Photo } from '@/app/lib/types';
 
 interface PhotosClientProps {
-  analogGalleries: Gallery[];
-  digitalGalleries: Gallery[];
+  vaoGalleries: Gallery[];
+  caminhoGalleries: Gallery[];
+  mareGalleries: Gallery[];
   galleryLoadFailed: boolean;
 }
 
 const PhotosClient: React.FC<PhotosClientProps> = ({
-  analogGalleries,
-  digitalGalleries,
+  vaoGalleries,
+  caminhoGalleries,
+  mareGalleries,
   galleryLoadFailed,
 }) => {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
@@ -27,7 +29,9 @@ const PhotosClient: React.FC<PhotosClientProps> = ({
   }, []);
 
   const hasGalleries =
-    analogGalleries.length > 0 || digitalGalleries.length > 0;
+    vaoGalleries.length > 0 ||
+    caminhoGalleries.length > 0 ||
+    mareGalleries.length > 0;
 
   return (
     <SiteShell>
@@ -44,15 +48,22 @@ const PhotosClient: React.FC<PhotosClientProps> = ({
         {!galleryLoadFailed && hasGalleries && (
           <>
             <ExpandableGalleries
-              title="Analog"
-              galleries={analogGalleries}
+              title="Vão"
+              galleries={vaoGalleries}
               onImageClick={handleImageClick}
               initialShowCount={2}
             />
 
             <ExpandableGalleries
-              title="Digital"
-              galleries={digitalGalleries}
+              title="Caminho"
+              galleries={caminhoGalleries}
+              onImageClick={handleImageClick}
+              initialShowCount={2}
+            />
+
+            <ExpandableGalleries
+              title="Maré"
+              galleries={mareGalleries}
               onImageClick={handleImageClick}
               initialShowCount={2}
             />

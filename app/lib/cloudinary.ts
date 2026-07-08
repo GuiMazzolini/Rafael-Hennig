@@ -50,14 +50,17 @@ async function searchRecentImages(
   return result.resources as CloudinaryResource[];
 }
 
+const PHOTO_COLLECTIONS = ['Vão', 'Caminho', 'Maré'];
+
 export async function getNewestPhotos(limit = 5): Promise<Photo[]> {
   try {
-    const [analog, digital] = await Promise.all([
-      searchRecentImages('analog', limit),
-      searchRecentImages('digital', limit),
+    const [vao, caminho, mare] = await Promise.all([
+      searchRecentImages(PHOTO_COLLECTIONS[0]!, limit),
+      searchRecentImages(PHOTO_COLLECTIONS[1]!, limit),
+      searchRecentImages(PHOTO_COLLECTIONS[2]!, limit),
     ]);
 
-    const merged = [...analog, ...digital]
+    const merged = [...vao, ...caminho, ...mare]
       .sort(
         (a, b) =>
           new Date(b.created_at ?? 0).getTime() -
@@ -73,7 +76,7 @@ export async function getNewestPhotos(limit = 5): Promise<Photo[]> {
 }
 
 export async function getGalleriesByCategory(
-  category: 'analog' | 'digital',
+  category: string,
 ): Promise<GalleryFetchResult> {
   try {
     const result = await cloudinary.api.sub_folders(category, {

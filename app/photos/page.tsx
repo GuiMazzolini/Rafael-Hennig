@@ -7,7 +7,8 @@ export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: `Photos — ${siteConfig.name}`,
-  description: 'Analog and digital photography by Rafael Hennig.',
+  description:
+    'Photography collections: Vão, Caminho, and Maré by Rafael Hennig.',
 };
 
 export default async function PhotosPage() {

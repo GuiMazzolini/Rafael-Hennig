@@ -17,8 +17,9 @@ type AboutData = {
 };
 
 type PhotosData = {
-  analogGalleries: Gallery[];
-  digitalGalleries: Gallery[];
+  vaoGalleries: Gallery[];
+  caminhoGalleries: Gallery[];
+  mareGalleries: Gallery[];
   galleryLoadFailed: boolean;
 };
 
@@ -41,15 +42,17 @@ export const getAboutData = cache(async (): Promise<AboutData> => {
 });
 
 export const getPhotosData = cache(async (): Promise<PhotosData> => {
-  const [analog, digital] = await Promise.all([
-    getGalleriesByCategory('analog'),
-    getGalleriesByCategory('digital'),
+  const [vao, caminho, mare] = await Promise.all([
+    getGalleriesByCategory('Vão'),
+    getGalleriesByCategory('Caminho'),
+    getGalleriesByCategory('Maré'),
   ]);
 
   return {
-    analogGalleries: analog.galleries,
-    digitalGalleries: digital.galleries,
-    galleryLoadFailed: analog.failed || digital.failed,
+    vaoGalleries: vao.galleries,
+    caminhoGalleries: caminho.galleries,
+    mareGalleries: mare.galleries,
+    galleryLoadFailed: vao.failed || caminho.failed || mare.failed,
   };
 });
 
