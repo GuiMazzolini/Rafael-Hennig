@@ -8,7 +8,7 @@ A Next.js portfolio site for Rafael Hennig — landing page, photo galleries, an
 |-------|---------|
 | `/` | Short intro, 5 newest photos, Contact |
 | `/about` | Full bio and portrait |
-| `/photos` | Full analog & digital galleries |
+| `/photos` | Full Vão, Caminho & Maré galleries |
 | `/videos` | Film / cinematography work |
 
 ## Requirements
@@ -42,19 +42,22 @@ Open [http://localhost:3000](http://localhost:3000) to view the site.
 Organize assets in Cloudinary with this folder layout:
 
 ```
-analog/
+Vão/
   berlin/
     photo1.jpg
   lisbon/
     ...
-digital/
+Caminho/
+  berlin/
+    ...
+Maré/
   berlin/
     ...
 about/
   portrait.jpg   ← optional, used in the About section
 ```
 
-- **Home page** shows the 5 most recently uploaded photos from `analog/` and `digital/`.
+- **Home page** shows the 5 most recently uploaded photos from `Vão/`, `Caminho/`, and `Maré/`.
 - **Photo galleries** use subfolder names as titles (e.g. `new-york` → "New York").
 - **Videos** are loaded from **Vimeo** (title and description come from Vimeo automatically).
 
