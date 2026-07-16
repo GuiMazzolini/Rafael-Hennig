@@ -29,7 +29,7 @@ export const HeroCrossfadeImage: React.FC<HeroCrossfadeImageProps> = ({
           fill
           sizes={sizes}
           priority={priority && idx === 0}
-          className={`object-cover transition-opacity duration-[1400ms] ease-in-out ${
+          className={`object-cover motion-safe:transition-opacity motion-safe:duration-[1400ms] motion-safe:ease-in-out ${
             idx === activeIndex ? 'opacity-100' : 'opacity-0'
           }`}
           draggable={false}

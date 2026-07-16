@@ -35,7 +35,7 @@ export const FeaturedPhotosSection: React.FC<FeaturedPhotosSectionProps> = ({
               fill
               sizes="(max-width: 768px) 50vw, 20vw"
               priority={idx < 2}
-              className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+              className="object-cover motion-safe:transition-transform motion-safe:duration-500 group-hover:scale-[1.03]"
               draggable={false}
             />
           </button>

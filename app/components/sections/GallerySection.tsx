@@ -51,7 +51,7 @@ export const PhotoGallerySection: React.FC<PhotoGallerySectionProps> = ({
                 sizes="(max-width: 768px) 50vw, 25vw"
                 priority={idx < 4}
                 draggable={false}
-                className="object-cover transition-all duration-500 ease-out group-hover:brightness-105 md:group-hover:scale-[1.02]"
+                className="object-cover motion-safe:transition-all motion-safe:duration-500 motion-safe:ease-out group-hover:brightness-105 md:group-hover:scale-[1.02]"
               />
             </button>
           ))}

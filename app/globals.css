@@ -14,6 +14,10 @@ html {
   html {
     scroll-behavior: auto;
   }
+
+  .animate-hero {
+    animation: none !important;
+  }
 }
 
 body {

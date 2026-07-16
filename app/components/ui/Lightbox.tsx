@@ -35,6 +35,11 @@ export const Lightbox: React.FC<LightboxProps> = ({
   }, [images.length]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length > 1) {
+      touchStartRef.current = null;
+      return;
+    }
+
     touchStartRef.current = {
       x: e.touches[0].clientX,
       y: e.touches[0].clientY,
@@ -44,7 +49,7 @@ export const Lightbox: React.FC<LightboxProps> = ({
   const handleTouchEnd = (e: React.TouchEvent) => {
     const start = touchStartRef.current;
     touchStartRef.current = null;
-    if (!start) return;
+    if (!start || e.changedTouches.length !== 1) return;
 
     const dx = e.changedTouches[0].clientX - start.x;
     const dy = e.changedTouches[0].clientY - start.y;
@@ -91,6 +96,10 @@ export const Lightbox: React.FC<LightboxProps> = ({
     };
   }, [onClose, goPrev, goNext]);
 
+  useEffect(() => {
+    setIndex(startIndex);
+  }, [startIndex]);
+
   if (!images.length) return null;
 
   const image = images[index];
@@ -98,7 +107,7 @@ export const Lightbox: React.FC<LightboxProps> = ({
   return (
     <div
       ref={dialogRef}
-      className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center backdrop-blur-sm touch-none"
+      className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center backdrop-blur-sm"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
@@ -107,10 +116,10 @@ export const Lightbox: React.FC<LightboxProps> = ({
       <button
         ref={closeButtonRef}
         onClick={onClose}
-        className="absolute top-6 right-6 p-2 text-white hover:opacity-60 transition-opacity z-10"
+        className="absolute top-4 right-4 md:top-6 md:right-6 p-3 text-white hover:opacity-60 transition-opacity z-10"
         aria-label="Close lightbox"
       >
-        <X size={32} />
+        <X size={28} className="md:w-8 md:h-8" />
       </button>
 
       {hasPrev && (
@@ -119,10 +128,10 @@ export const Lightbox: React.FC<LightboxProps> = ({
             e.stopPropagation();
             goPrev();
           }}
-          className="absolute left-6 md:left-10 text-white opacity-80 hover:opacity-100 transition-opacity z-10 hidden md:block"
+          className="absolute left-2 md:left-10 p-3 text-white opacity-80 hover:opacity-100 transition-opacity z-10"
           aria-label="Previous image"
         >
-          <ChevronLeft size={48} />
+          <ChevronLeft size={36} className="md:w-12 md:h-12" />
         </button>
       )}
 
@@ -132,15 +141,15 @@ export const Lightbox: React.FC<LightboxProps> = ({
             e.stopPropagation();
             goNext();
           }}
-          className="absolute right-6 md:right-10 text-white opacity-80 hover:opacity-100 transition-opacity z-10 hidden md:block"
+          className="absolute right-2 md:right-10 p-3 text-white opacity-80 hover:opacity-100 transition-opacity z-10"
           aria-label="Next image"
         >
-          <ChevronRight size={48} />
+          <ChevronRight size={36} className="md:w-12 md:h-12" />
         </button>
       )}
 
       <div
-        className="relative w-full h-full max-w-[90vw] max-h-[90vh] mx-4 md:mx-12"
+        className="relative w-full h-full max-w-[92vw] max-h-[85vh] md:max-h-[90vh] mx-2 md:mx-12 touch-pan-y"
         onClick={(e) => e.stopPropagation()}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
@@ -149,14 +158,15 @@ export const Lightbox: React.FC<LightboxProps> = ({
           src={image}
           alt={`Full size view, image ${index + 1} of ${images.length}`}
           fill
-          sizes="90vw"
+          sizes="(max-width: 768px) 100vw, 92vw"
+          quality={90}
           priority
-          className="object-contain select-none pointer-events-none"
+          className="object-contain select-none"
           draggable={false}
         />
       </div>
 
-      <p className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/60 text-sm tabular-nums">
+      <p className="absolute bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 text-white/60 text-sm tabular-nums">
         {index + 1} / {images.length}
       </p>
     </div>
