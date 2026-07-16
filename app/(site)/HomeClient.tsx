@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback } from 'react';
 import { SiteShell } from '@/app/components/layout/SiteShell';
-import { HeroSection } from '@/app/components/sections/HeroSection';
+import { HeroSection } from '@/app/components/hero/HeroSection';
 import { FeaturedPhotosSection } from '@/app/components/sections/FeaturedPhotosSection';
 import { ContactSection } from '@/app/components/sections/ContactSection';
 import { Lightbox } from '@/app/components/ui/Lightbox';

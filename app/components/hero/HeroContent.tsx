@@ -2,15 +2,15 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { HeroCrossfadeImage } from '@/app/components/sections/HeroCrossfadeImage';
-import { useHeroCrossfade } from '@/app/components/sections/useHeroCrossfade';
+import { HeroCrossfadeImage } from '@/app/components/hero/HeroCrossfadeImage';
+import { useHeroCrossfade } from '@/app/components/hero/useHeroCrossfade';
 import type { Photo } from '@/app/lib/types';
 
-interface HeroPhotoStackProps {
+interface HeroContentProps {
   photos: Photo[];
 }
 
-export const HeroPhotoStack: React.FC<HeroPhotoStackProps> = ({ photos }) => {
+export const HeroContent: React.FC<HeroContentProps> = ({ photos }) => {
   const activeIndex = useHeroCrossfade(photos.length);
 
   return (

@@ -9,7 +9,6 @@ interface ExpandableGalleriesProps {
   galleries: Gallery[];
   onImageClick: (index: number, photos: Photo[]) => void;
   initialShowCount?: number;
-  sectionId?: string;
 }
 
 export const ExpandableGalleries: React.FC<ExpandableGalleriesProps> = ({
@@ -17,7 +16,6 @@ export const ExpandableGalleries: React.FC<ExpandableGalleriesProps> = ({
   galleries,
   onImageClick,
   initialShowCount = 2,
-  sectionId,
 }) => {
   const [showAll, setShowAll] = useState(false);
 
@@ -31,7 +29,7 @@ export const ExpandableGalleries: React.FC<ExpandableGalleriesProps> = ({
   }
 
   return (
-    <div id={sectionId} className="py-6 md:py-10 scroll-mt-24 first:pt-0">
+    <div className="py-6 md:py-10 scroll-mt-24 first:pt-0">
       <h2 className="text-3xl md:text-5xl font-light tracking-tight mb-6 md:mb-8 px-6 md:px-12 max-w-screen-2xl mx-auto text-neutral-900 border-b border-neutral-400/40 pb-4 md:pb-6">
         {title}
       </h2>

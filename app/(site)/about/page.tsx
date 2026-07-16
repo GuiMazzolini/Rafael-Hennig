@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
+import { SiteShell } from '@/app/components/layout/SiteShell';
+import { PageShell } from '@/app/components/layout/PageShell';
+import { AboutSection } from '@/app/components/sections/AboutSection';
 import { getAboutData } from '@/app/lib/galleries';
 import { siteConfig } from '@/app/lib/site';
-import AboutClient from './AboutClient';
 
 export const revalidate = 3600;
 
@@ -13,5 +15,11 @@ export const metadata: Metadata = {
 export default async function AboutPage() {
   const data = await getAboutData();
 
-  return <AboutClient {...data} />;
+  return (
+    <SiteShell>
+      <PageShell>
+        <AboutSection aboutPhotoUrl={data.aboutPhotoUrl} />
+      </PageShell>
+    </SiteShell>
+  );
 }

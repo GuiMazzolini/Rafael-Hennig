@@ -1,6 +1,6 @@
 import { v2 as cloudinary } from 'cloudinary';
 import type { GalleryFetchResult, Photo } from '@/app/lib/types';
-import { getManualTagsForPublicId } from '@/app/lib/manualPhotoTags';
+import { getManualTagsForPublicId } from '@/app/config/manualPhotoTags';
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -96,31 +96,15 @@ export async function getNewestPhotos(limit = 5): Promise<Photo[]> {
       searchImagesInFolder(PHOTO_COLLECTIONS[2]!, limit),
     ]);
 
-    type TaggedResource = { resource: CloudinaryResource; tags: string[] };
-    const tagged: TaggedResource[] = [
-      ...vao.map((resource) => ({
-        resource,
-        tags: [PHOTO_COLLECTIONS[0]!],
-      })),
-      ...caminho.map((resource) => ({
-        resource,
-        tags: [PHOTO_COLLECTIONS[1]!],
-      })),
-      ...mare.map((resource) => ({
-        resource,
-        tags: [PHOTO_COLLECTIONS[2]!],
-      })),
-    ];
-
-    const newest = tagged
+    const merged = [...vao, ...caminho, ...mare]
       .sort(
         (a, b) =>
-          new Date(b.resource.created_at ?? 0).getTime() -
-          new Date(a.resource.created_at ?? 0).getTime(),
+          new Date(b.created_at ?? 0).getTime() -
+          new Date(a.created_at ?? 0).getTime(),
       )
       .slice(0, limit);
 
-    return newest.map((t) => mapResourceToPhoto(t.resource, t.tags));
+    return merged.map((resource) => mapResourceToPhoto(resource, []));
   } catch (error) {
     console.error('Error fetching newest photos:', error);
     return [];
@@ -136,9 +120,6 @@ export async function getGalleriesByCategory(
     });
 
     const folders = (result.folders ?? []) as CloudinaryFolder[];
-
-    // If the user organizes photos directly under `Vão/` (no nested folders like `Berlin/`),
-    // show a single gallery for the whole collection.
     if (folders.length === 0) {
       const photoResources = await searchImagesInFolder(category, 500);
 
@@ -147,9 +128,8 @@ export async function getGalleriesByCategory(
           ? [
               {
                 id: category,
-                // Title is intentionally empty so we don't duplicate the section title ("Vão").
                 title: '',
-                photos: photoResources.map((r) => mapResourceToPhoto(r, [category])),
+                photos: photoResources.map((r) => mapResourceToPhoto(r, [])),
               },
             ]
           : [],
@@ -170,7 +150,7 @@ export async function getGalleriesByCategory(
 
         const photoResources = photos.resources as CloudinaryResource[];
         const locationTag = formatLocationName(folder.name);
-        const extraTags = [category, locationTag];
+        const extraTags = [locationTag];
 
         return {
           id: folder.name,

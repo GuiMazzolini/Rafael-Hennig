@@ -38,15 +38,6 @@ body {
   animation: heroIn 3s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-
 .grain-overlay {
   pointer-events: none;
   position: absolute;

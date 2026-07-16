@@ -14,6 +14,31 @@ interface PhotosClientProps {
   galleryLoadFailed: boolean;
 }
 
+const PRIMARY_FILTER_TAGS = new Set(['35mm', 'color', 'b/w']);
+const HIDDEN_FILTER_TAGS = new Set(['vao', 'caminho', 'mare']);
+
+function normalizeFilterTag(tag: string) {
+  return tag.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase();
+}
+
+function isHiddenFilterTag(tag: string) {
+  return HIDDEN_FILTER_TAGS.has(normalizeFilterTag(tag));
+}
+
+function filterChipClass(active: boolean) {
+  return `px-4 py-2 rounded-full text-sm border transition-colors ${
+    active
+      ? 'bg-neutral-900 text-white border-neutral-900'
+      : 'border-neutral-300 text-neutral-700 hover:border-neutral-900'
+  }`;
+}
+
+function formatFilterLabel(tag: string) {
+  if (tag === 'b/w') return 'B/W';
+  if (tag === 'color') return 'Color';
+  return tag;
+}
+
 const PhotosClient: React.FC<PhotosClientProps> = ({
   vaoGalleries,
   caminhoGalleries,
@@ -23,6 +48,7 @@ const PhotosClient: React.FC<PhotosClientProps> = ({
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [lightboxImages, setLightboxImages] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [showMoreFilters, setShowMoreFilters] = useState(false);
 
   const handleImageClick = useCallback((index: number, photos: Photo[]) => {
     setLightboxImages(photos.map((p) => p.fullSrc));
@@ -60,7 +86,7 @@ const PhotosClient: React.FC<PhotosClientProps> = ({
     const tags = new Set<string>();
     for (const photo of allPhotos) {
       for (const t of photo.tags) {
-        if (!formatSet.has(t)) tags.add(t);
+        if (!formatSet.has(t) && !isHiddenFilterTag(t)) tags.add(t);
       }
     }
     return Array.from(tags).sort((a, b) => a.localeCompare(b));
@@ -105,7 +131,27 @@ const PhotosClient: React.FC<PhotosClientProps> = ({
     });
   }, []);
 
-  const clearTags = useCallback(() => setSelectedTags([]), []);
+  const clearTags = useCallback(() => {
+    setSelectedTags([]);
+    setShowMoreFilters(false);
+  }, []);
+
+  const secondarySelectedCount = selectedTags.filter(
+    (tag) => !PRIMARY_FILTER_TAGS.has(tag),
+  ).length;
+
+  const renderFilterChip = (tag: string) => {
+    const active = selectedTags.includes(tag);
+    return (
+      <button
+        key={tag}
+        onClick={() => toggleTag(tag)}
+        className={filterChipClass(active)}
+      >
+        {formatFilterLabel(tag)}
+      </button>
+    );
+  };
 
   return (
     <SiteShell>
@@ -113,65 +159,34 @@ const PhotosClient: React.FC<PhotosClientProps> = ({
         <div className="px-6 md:px-12 max-w-screen-2xl mx-auto mb-10 pt-2">
           <div className="flex flex-wrap items-center gap-2 justify-between">
             <div className="flex flex-wrap items-center gap-2">
-              {formatFilters.map((tag) => {
-                const active = selectedTags.includes(tag);
-                return (
-                  <button
-                    key={tag}
-                    onClick={() => toggleTag(tag)}
-                    className={`px-4 py-2 rounded-full text-sm border transition-colors ${
-                      active
-                        ? 'bg-neutral-900 text-white border-neutral-900'
-                        : 'border-neutral-300 text-neutral-700 hover:border-neutral-900'
-                    }`}
-                  >
-                    {tag}
-                  </button>
-                );
-              })}
-
-              {toneFilters.map((tag) => {
-                const active = selectedTags.includes(tag);
-                const label = tag === 'b/w' ? 'B/W' : 'Color';
-                return (
-                  <button
-                    key={tag}
-                    onClick={() => toggleTag(tag)}
-                    className={`px-4 py-2 rounded-full text-sm border transition-colors ${
-                      active
-                        ? 'bg-neutral-900 text-white border-neutral-900'
-                        : 'border-neutral-300 text-neutral-700 hover:border-neutral-900'
-                    }`}
-                  >
-                    {label}
-                  </button>
-                );
-              })}
+              {[...formatFilters, ...toneFilters].map(renderFilterChip)}
 
               {locationFilters.length > 0 && (
-                <div className="flex flex-wrap items-center gap-2">
-                  {locationFilters.map((tag) => {
-                    const active = selectedTags.includes(tag);
-                    return (
-                      <button
-                        key={tag}
-                        onClick={() => toggleTag(tag)}
-                        className={`px-4 py-2 rounded-full text-sm border transition-colors ${
-                          active
-                            ? 'bg-neutral-900 text-white border-neutral-900'
-                            : 'border-neutral-300 text-neutral-700 hover:border-neutral-900'
-                        }`}
-                      >
-                        {tag}
-                      </button>
-                    );
-                  })}
-                </div>
+                <>
+                  <div className="hidden md:flex flex-wrap items-center gap-2">
+                    {locationFilters.map(renderFilterChip)}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setShowMoreFilters((open) => !open)}
+                    className="md:hidden px-4 py-2 rounded-full text-sm border border-neutral-300 text-neutral-700 hover:border-neutral-900 transition-colors"
+                    aria-expanded={showMoreFilters}
+                  >
+                    {showMoreFilters ? 'Hide filters' : 'More filters'}
+                    {!showMoreFilters && secondarySelectedCount > 0 && (
+                      <span className="ml-1.5 text-neutral-500">
+                        ({secondarySelectedCount})
+                      </span>
+                    )}
+                  </button>
+                </>
               )}
             </div>
 
             {selectedTags.length > 0 && (
               <button
+                type="button"
                 onClick={clearTags}
                 className="text-sm text-neutral-600 hover:text-neutral-900 transition-colors underline underline-offset-4"
               >
@@ -179,6 +194,14 @@ const PhotosClient: React.FC<PhotosClientProps> = ({
               </button>
             )}
           </div>
+
+          {locationFilters.length > 0 && showMoreFilters && (
+            <div className="md:hidden mt-4 border-t border-neutral-300/60">
+              <div className="flex flex-wrap items-center gap-2 pt-5 pb-4">
+                {locationFilters.map(renderFilterChip)}
+              </div>
+            </div>
+          )}
 
           {selectedTags.length > 0 && (
             <p className="mt-4 text-sm text-neutral-600">
