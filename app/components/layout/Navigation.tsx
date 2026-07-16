@@ -4,11 +4,10 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
-import { siteConfig } from '@/app/lib/site';
 
 interface NavigationProps {
   scrolled: boolean;
-  showContactSubtitle: boolean;
+  contactInView: boolean;
 }
 
 const navLinks = [
@@ -20,7 +19,7 @@ const navLinks = [
 
 export const Navigation: React.FC<NavigationProps> = ({
   scrolled,
-  showContactSubtitle,
+  contactInView,
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
@@ -34,7 +33,7 @@ export const Navigation: React.FC<NavigationProps> = ({
 
   const isActive = (href: string) => {
     if (href === '/#contact') {
-      return pathname === '/' && showContactSubtitle;
+      return pathname === '/' && contactInView;
     }
     return pathname === href;
   };
@@ -53,15 +52,6 @@ export const Navigation: React.FC<NavigationProps> = ({
           className="text-lg md:text-xl font-light tracking-tight hover:opacity-60 transition-opacity"
         >
           Rafael Hennig
-          <span
-            className={`block text-[11px] md:text-xs font-normal tracking-wide text-neutral-500 transition-all duration-300 overflow-hidden ${
-              showContactSubtitle
-                ? 'max-h-5 opacity-100 mt-1'
-                : 'max-h-0 opacity-0'
-            }`}
-          >
-            {siteConfig.email}
-          </span>
         </Link>
 
         <button

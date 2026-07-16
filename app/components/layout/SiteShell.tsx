@@ -38,11 +38,11 @@ export const SiteShell: React.FC<SiteShellProps> = ({ children }) => {
     return () => observer.disconnect();
   }, [pathname]);
 
-  const showContactSubtitle = pathname === '/' && contactInView;
+  const contactInViewActive = pathname === '/' && contactInView;
 
   return (
     <div className="bg-neutral-50 min-h-screen font-sans">
-      <Navigation scrolled={scrolled} showContactSubtitle={showContactSubtitle} />
+      <Navigation scrolled={scrolled} contactInView={contactInViewActive} />
       {children}
       <Footer />
     </div>

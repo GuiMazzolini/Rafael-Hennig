@@ -83,7 +83,19 @@ Titles and descriptions are read from each video's Vimeo metadata.
 | `REVALIDATION_SECRET` | Recommended | Secret for `/api/revalidate` (webhook + manual refresh) |
 | `NEXT_PUBLIC_SITE_URL` | No | Canonical site URL for Open Graph |
 | `NEXT_PUBLIC_INSTAGRAM_URL` | No | Instagram profile URL |
-| `NEXT_PUBLIC_LINKEDIN_URL` | No | LinkedIn profile URL |
+| `NEXT_PUBLIC_FORMSPREE_FORM_ID` | Recommended | Formspree form ID for the contact form |
+
+## Contact form (Formspree)
+
+1. Create a free form at [Formspree](https://formspree.io/).
+2. Copy the form ID from the endpoint (`https://formspree.io/f/xxxxxxx` → `xxxxxxx`).
+3. Add it to `.env.local` and Vercel:
+   ```
+   NEXT_PUBLIC_FORMSPREE_FORM_ID=xxxxxxx
+   ```
+4. In Formspree, set the notification email to Rafael’s inbox.
+
+The home page contact section submits name, email, and message through Formspree. Instagram is shown when `NEXT_PUBLIC_INSTAGRAM_URL` is set.
 
 ## Instant gallery updates (Cloudinary webhook)
 
