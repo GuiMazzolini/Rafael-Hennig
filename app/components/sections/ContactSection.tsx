@@ -6,7 +6,19 @@ import { getSocialLinks } from '@/app/lib/site';
 
 type FormStatus = 'idle' | 'submitting' | 'success' | 'error';
 
-const FORMSPREE_ID = process.env.NEXT_PUBLIC_FORMSPREE_FORM_ID;
+function getFormspreeEndpoint(): string | null {
+  const value = process.env.NEXT_PUBLIC_FORMSPREE_FORM_ID?.trim();
+  if (!value) return null;
+
+  // Accept either the form ID (`maqrbbzr`) or the full Formspree URL.
+  if (value.startsWith('http://') || value.startsWith('https://')) {
+    return value.replace(/\/$/, '');
+  }
+
+  return `https://formspree.io/f/${value}`;
+}
+
+const FORMSPREE_ENDPOINT = getFormspreeEndpoint();
 
 export const ContactSection: React.FC = () => {
   const instagram = getSocialLinks().find((link) => link.label === 'Instagram');
@@ -16,7 +28,7 @@ export const ContactSection: React.FC = () => {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    if (!FORMSPREE_ID) {
+    if (!FORMSPREE_ENDPOINT) {
       setStatus('error');
       setErrorMessage('Something went wrong. Please try again later.');
       return;
@@ -29,7 +41,7 @@ export const ContactSection: React.FC = () => {
     setErrorMessage(null);
 
     try {
-      const response = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+      const response = await fetch(FORMSPREE_ENDPOINT, {
         method: 'POST',
         body: data,
         headers: { Accept: 'application/json' },
@@ -168,7 +180,7 @@ export const ContactSection: React.FC = () => {
 
                 <button
                   type="submit"
-                  disabled={status === 'submitting' || !FORMSPREE_ID}
+                  disabled={status === 'submitting' || !FORMSPREE_ENDPOINT}
                   className="mt-2 px-8 py-3.5 bg-neutral-900 text-white rounded-full text-sm font-light hover:bg-neutral-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {status === 'submitting' ? 'Sending…' : 'Send message'}
