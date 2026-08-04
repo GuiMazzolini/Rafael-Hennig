@@ -6,6 +6,8 @@ import type { Gallery, Photo } from '@/app/lib/types';
 
 interface ExpandableGalleriesProps {
   title: string;
+  definition?: string;
+  description?: string;
   galleries: Gallery[];
   onImageClick: (index: number, photos: Photo[]) => void;
   initialShowCount?: number;
@@ -13,6 +15,8 @@ interface ExpandableGalleriesProps {
 
 export const ExpandableGalleries: React.FC<ExpandableGalleriesProps> = ({
   title,
+  definition,
+  description,
   galleries,
   onImageClick,
   initialShowCount = 2,
@@ -30,9 +34,21 @@ export const ExpandableGalleries: React.FC<ExpandableGalleriesProps> = ({
 
   return (
     <div className="py-6 md:py-10 scroll-mt-24 first:pt-0">
-      <h2 className="text-3xl md:text-5xl font-light tracking-tight mb-6 md:mb-8 px-6 md:px-12 max-w-screen-2xl mx-auto text-neutral-900 border-b border-neutral-400/40 pb-4 md:pb-6">
-        {title}
-      </h2>
+      <div className="mb-6 md:mb-8 px-6 md:px-12 max-w-screen-2xl mx-auto border-b border-neutral-400/40 pb-6 md:pb-8">
+        <h2 className="text-3xl md:text-5xl font-light tracking-tight text-neutral-900">
+          {title}
+        </h2>
+        {definition && (
+          <p className="mt-3 md:mt-4 text-sm md:text-base text-neutral-500 font-light tracking-wide">
+            {definition}
+          </p>
+        )}
+        {description && (
+          <p className="mt-4 md:mt-5 text-base md:text-lg text-neutral-700 font-light leading-relaxed max-w-2xl">
+            {description}
+          </p>
+        )}
+      </div>
       <div className="space-y-12 md:space-y-20">
         {visibleGalleries.map((gallery) => (
           <PhotoGallerySection

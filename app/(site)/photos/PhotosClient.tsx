@@ -224,6 +224,8 @@ const PhotosClient: React.FC<PhotosClientProps> = ({
           <>
             <ExpandableGalleries
               title="Vão"
+              definition="— /vɐ̃w̃/ — noun, Portuguese — gap, span, void; the open space between two structures."
+              description="There's a bittersweet beauty in the city, in the spaces between concrete and steel. Not always chosen, but somehow home too. These photographs are my attempt to find breathing room within it: the gap, the pause, the quiet inside something so busy."
               galleries={filteredVaoGalleries}
               onImageClick={handleImageClick}
               initialShowCount={2}
@@ -231,6 +233,8 @@ const PhotosClient: React.FC<PhotosClientProps> = ({
 
             <ExpandableGalleries
               title="Caminho"
+              definition="— /kaˈmiɲu/ — noun, Portuguese — path, way; a route traveled on foot."
+              description="In a sense, I've always felt at home outdoors, a path back to myself. Spending time in the wild brings me back to a place of retreat and reconnection, reflected in the photos from these brief moments of transit, that for a while, bring me home."
               galleries={filteredCaminhoGalleries}
               onImageClick={handleImageClick}
               initialShowCount={2}
@@ -238,6 +242,8 @@ const PhotosClient: React.FC<PhotosClientProps> = ({
 
             <ExpandableGalleries
               title="Maré"
+              definition="— /maˈɾɛ/ — noun, Portuguese — tide; the rhythmic rise and fall of the sea."
+              description="The movement of returning to one's origin. The sea is one of my passions, a presence deeply rooted in my upbringing. Whenever I have the chance, I try to capture and bring back memories from a place of joy, the coast."
               galleries={filteredMareGalleries}
               onImageClick={handleImageClick}
               initialShowCount={2}
